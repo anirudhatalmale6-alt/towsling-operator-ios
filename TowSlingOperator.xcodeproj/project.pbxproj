@@ -3,19 +3,44 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 56;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		7A0000000000000000000002 /* Config.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000001 /* Config.swift */; };
+		7A0000000000000000000004 /* BoardStore.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000003 /* BoardStore.swift */; };
+		7A0000000000000000000006 /* Job.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000005 /* Job.swift */; };
+		7A0000000000000000000008 /* Session.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000007 /* Session.swift */; };
+		7A000000000000000000000A /* API.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000009 /* API.swift */; };
+		7A000000000000000000000C /* Theme.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000000B /* Theme.swift */; };
+		7A000000000000000000000E /* TowSlingOperatorApp.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000000D /* TowSlingOperatorApp.swift */; };
+		7A0000000000000000000010 /* BoardView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000000F /* BoardView.swift */; };
+		7A0000000000000000000012 /* JobCard.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000011 /* JobCard.swift */; };
+		7A0000000000000000000014 /* LoginView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000013 /* LoginView.swift */; };
+		7A0000000000000000000016 /* MyJobsView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000015 /* MyJobsView.swift */; };
+		7A0000000000000000000018 /* RootView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000017 /* RootView.swift */; };
+		7A000000000000000000001A /* Assets.xcassets in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000019 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		AA0000000000000000000001 /* TowSlingOperator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TowSlingOperator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A000000000000000000001D /* TowSlingOperator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TowSlingOperator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A0000000000000000000001 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Config.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000003 /* BoardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BoardStore.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000005 /* Job.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Job.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000007 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Session.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000009 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "API.swift"; sourceTree = "<group>"; };
+		7A000000000000000000000B /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Theme.swift"; sourceTree = "<group>"; };
+		7A000000000000000000000D /* TowSlingOperatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TowSlingOperatorApp.swift"; sourceTree = "<group>"; };
+		7A000000000000000000000F /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BoardView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000011 /* JobCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobCard.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000013 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000015 /* MyJobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyJobsView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000017 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RootView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000019 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		AA0000000000000000000002 /* TowSlingOperator */ = {isa = PBXFileSystemSynchronizedRootGroup; path = TowSlingOperator; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
-		AA0000000000000000000003 /* Frameworks */ = {
+		7A0000000000000000000022 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -25,168 +50,216 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AA0000000000000000000004 = {
+		7A000000000000000000001E = {
 			isa = PBXGroup;
 			children = (
-				AA0000000000000000000002 /* TowSlingOperator */,
-				AA0000000000000000000005 /* Products */,
+				7A0000000000000000000020 /* TowSlingOperator */,
+				7A000000000000000000001F /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		AA0000000000000000000005 /* Products */ = {
+		7A000000000000000000001F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AA0000000000000000000001 /* TowSlingOperator.app */,
+				7A000000000000000000001D /* TowSlingOperator.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7A0000000000000000000020 /* TowSlingOperator */ = {
+			isa = PBXGroup;
+			children = (
+				7A000000000000000000002B /* Models */,
+				7A000000000000000000002E /* Networking */,
+				7A0000000000000000000031 /* Views */,
+				7A0000000000000000000001 /* Config.swift */,
+				7A000000000000000000000B /* Theme.swift */,
+				7A000000000000000000000D /* TowSlingOperatorApp.swift */,
+				7A0000000000000000000019 /* Assets.xcassets */,
+			);
+			path = "TowSlingOperator";
+			sourceTree = "<group>";
+		};
+		7A000000000000000000002B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				7A0000000000000000000003 /* BoardStore.swift */,
+				7A0000000000000000000005 /* Job.swift */,
+				7A0000000000000000000007 /* Session.swift */,
+			);
+			path = "Models";
+			sourceTree = "<group>";
+		};
+		7A000000000000000000002E /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				7A0000000000000000000009 /* API.swift */,
+			);
+			path = "Networking";
+			sourceTree = "<group>";
+		};
+		7A0000000000000000000031 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7A000000000000000000000F /* BoardView.swift */,
+				7A0000000000000000000011 /* JobCard.swift */,
+				7A0000000000000000000013 /* LoginView.swift */,
+				7A0000000000000000000015 /* MyJobsView.swift */,
+				7A0000000000000000000017 /* RootView.swift */,
+			);
+			path = "Views";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AA0000000000000000000006 /* TowSlingOperator */ = {
+		7A000000000000000000001C /* TowSlingOperator */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AA0000000000000000000007 /* Build configuration list for PBXNativeTarget "TowSlingOperator" */;
+			buildConfigurationList = 7A0000000000000000000025 /* Build configuration list for PBXNativeTarget "TowSlingOperator" */;
 			buildPhases = (
-				AA0000000000000000000008 /* Sources */,
-				AA0000000000000000000003 /* Frameworks */,
-				AA0000000000000000000009 /* Resources */,
+				7A0000000000000000000021 /* Sources */,
+				7A0000000000000000000022 /* Frameworks */,
+				7A0000000000000000000023 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				AA0000000000000000000002 /* TowSlingOperator */,
-			);
 			name = TowSlingOperator;
 			productName = TowSlingOperator;
-			productReference = AA0000000000000000000001 /* TowSlingOperator.app */;
+			productReference = 7A000000000000000000001D /* TowSlingOperator.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		AA000000000000000000000A /* Project object */ = {
+		7A000000000000000000001B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					AA0000000000000000000006 = {
-						CreatedOnToolsVersion = 16.0;
+					7A000000000000000000001C = {
+						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
-			buildConfigurationList = AA000000000000000000000B /* Build configuration list for PBXProject "TowSlingOperator" */;
+			buildConfigurationList = 7A0000000000000000000024 /* Build configuration list for PBXProject "TowSlingOperator" */;
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = AA0000000000000000000004;
-			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
-			productRefGroup = AA0000000000000000000005 /* Products */;
+			mainGroup = 7A000000000000000000001E;
+			productRefGroup = 7A000000000000000000001F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AA0000000000000000000006 /* TowSlingOperator */,
+				7A000000000000000000001C /* TowSlingOperator */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		AA0000000000000000000009 /* Resources */ = {
+		7A0000000000000000000023 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A000000000000000000001A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		AA0000000000000000000008 /* Sources */ = {
+		7A0000000000000000000021 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A0000000000000000000002 /* Config.swift in Sources */,
+				7A0000000000000000000004 /* BoardStore.swift in Sources */,
+				7A0000000000000000000006 /* Job.swift in Sources */,
+				7A0000000000000000000008 /* Session.swift in Sources */,
+				7A000000000000000000000A /* API.swift in Sources */,
+				7A000000000000000000000C /* Theme.swift in Sources */,
+				7A000000000000000000000E /* TowSlingOperatorApp.swift in Sources */,
+				7A0000000000000000000010 /* BoardView.swift in Sources */,
+				7A0000000000000000000012 /* JobCard.swift in Sources */,
+				7A0000000000000000000014 /* LoginView.swift in Sources */,
+				7A0000000000000000000016 /* MyJobsView.swift in Sources */,
+				7A0000000000000000000018 /* RootView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		AA000000000000000000000C /* Debug */ = {
+		7A0000000000000000000026 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		AA000000000000000000000D /* Release */ = {
+		7A0000000000000000000027 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				MTL_ENABLE_DEBUG_INFO = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
-				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
-		AA000000000000000000000E /* Debug */ = {
+		7A0000000000000000000028 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = TowSling;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is shared with the customer only while you are working their job, so they can watch your truck arrive.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Photographing a vehicle before and after a tow is what protects you against a damage claim.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
@@ -199,24 +272,22 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.towsling.operator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		AA000000000000000000000F /* Release */ = {
+		7A0000000000000000000029 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = TowSling;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is shared with the customer only while you are working their job, so they can watch your truck arrive.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Photographing a vehicle before and after a tow is what protects you against a damage claim.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
@@ -229,7 +300,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.towsling.operator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -237,25 +307,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA000000000000000000000B /* Build configuration list for PBXProject "TowSlingOperator" */ = {
+		7A0000000000000000000024 /* Build configuration list for PBXProject "TowSlingOperator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AA000000000000000000000C /* Debug */,
-				AA000000000000000000000D /* Release */,
+				7A0000000000000000000026 /* Debug */,
+				7A0000000000000000000027 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AA0000000000000000000007 /* Build configuration list for PBXNativeTarget "TowSlingOperator" */ = {
+		7A0000000000000000000025 /* Build configuration list for PBXNativeTarget "TowSlingOperator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AA000000000000000000000E /* Debug */,
-				AA000000000000000000000F /* Release */,
+				7A0000000000000000000028 /* Debug */,
+				7A0000000000000000000029 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = AA000000000000000000000A /* Project object */;
+	rootObject = 7A000000000000000000001B /* Project object */;
 }

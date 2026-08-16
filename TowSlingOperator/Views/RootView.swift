@@ -32,7 +32,6 @@ struct RootView: View {
 }
 
 struct SignedInView: View {
-    @EnvironmentObject private var session: Session
     @EnvironmentObject private var board: BoardStore
 
     @Environment(\.scenePhase) private var scenePhase

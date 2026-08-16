@@ -1,6 +1,11 @@
 import Foundation
 import Combine
 import SwiftUI
+// SecItemAdd, SecItemCopyMatching, kSecClass and friends live in the Security
+// framework. Nothing else here re-exports it, so without this line the Keychain
+// wrapper below is "cannot find 'kSecClass' in scope" and the whole target
+// fails to compile.
+import Security
 
 struct Account: Decodable, Equatable {
     let id: Int

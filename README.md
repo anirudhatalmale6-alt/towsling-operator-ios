@@ -9,16 +9,28 @@ will not stop to download an app, and the web flow already serves them.
 
 ## Opening it
 
-1. Open `TowSlingOperator.xcodeproj` in Xcode 16 or newer.
+1. Open `TowSlingOperator.xcodeproj` in Xcode 14 or newer.
 2. Pick an iPhone simulator and press Run.
 
 That is the whole setup. No CocoaPods, no Swift Package resolution, no
 `.xcworkspace`. Sign in with the same email and password a towing company uses
 on the website.
 
-> Xcode 16 is required because the project uses file-system synchronised
-> groups — files are picked up from the folder automatically, so adding a
-> `.swift` file needs no project edit and there is nothing to merge-conflict.
+### Adding or removing a source file
+
+The project file lists every source explicitly, so run:
+
+```
+python3 tools/genproject.py
+```
+
+and commit the regenerated `project.pbxproj`.
+
+It used to use Xcode 16's file-system synchronised groups, which pick files up
+from the folder with no project edit at all. Lovely, and a hard requirement on
+Xcode 16 — on anything older the project simply will not open, and the error
+does not say so. Since the build machine is not the machine this is written on,
+the format went back to one every Xcode since 14 can read.
 
 ### Running on a real phone
 
