@@ -1,0 +1,15 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+.DS_Store
+
+# The workspace/scheme Xcode generates on first open. Left out on purpose so a
+# freshly cloned copy gets Xcode's own defaults rather than someone else's
+# stale scheme.
+*.xcworkspace/xcuserdata/
+TowSlingOperator.xcodeproj/project.xcworkspace/
+TowSlingOperator.xcodeproj/xcuserdata/
