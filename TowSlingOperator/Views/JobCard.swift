@@ -55,6 +55,15 @@ struct JobCard: View {
             .fixedSize(horizontal: false, vertical: true)
             .padding(.top, 9)
 
+            // The exact addresses, before accepting — same as the web board.
+            // A driver cannot judge a job or promise an ETA from a city name.
+            if let from = job.pickupAddress, !from.isEmpty {
+                addressLine(from, letter: "A", tint: Color(hex: 0x2563EB))
+            }
+            if let to = job.dropoffAddress, !to.isEmpty {
+                addressLine(to, letter: "B", tint: Color(hex: 0x7C3AED))
+            }
+
             if let miles = job.towMiles, miles > 0 {
                 Text("\(miles, specifier: "%.1f") mi tow")
                     .font(.system(size: 12, weight: .semibold))
@@ -133,6 +142,23 @@ struct JobCard: View {
             }
         }
         .cardBackground()
+    }
+
+    private func addressLine(_ text: String, letter: String, tint: Color) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Text(letter)
+                .font(.system(size: 9.5, weight: .heavy))
+                .foregroundStyle(.white)
+                .frame(width: 17, height: 17)
+                .background(tint)
+                .clipShape(Circle())
+            Text(text)
+                .font(.system(size: 13))
+                .foregroundStyle(Theme.inkDim)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(.top, 6)
     }
 
     private var vehicleLine: String {
