@@ -113,11 +113,82 @@ actor API {
         _ = try await post(path, body: body, as: Ack.self)
     }
 
+    /// Multipart upload — job photographs.
+    ///
+    /// Its own function rather than a flag on send(): the Content-Type carries a
+    /// boundary, the fields are form-encoded rather than JSON, and a photograph
+    /// is the one payload here big enough that routing it through the JSON path
+    /// would mean base64 — a third larger again, held in memory, on a phone with
+    /// one bar at the roadside.
+    func upload<T: Decodable>(_ path: String,
+                              fields: [String: String],
+                              fileName: String,
+                              mimeType: String,
+                              fileData: Data,
+                              as type: T.Type) async throws -> T {
+
+        let boundary = "TowSling-\(UUID().uuidString)"
+        var body = Data()
+        func append(_ s: String) { body.append(s.data(using: .utf8)!) }
+
+        for (k, v) in fields {
+            append("--\(boundary)\r\n")
+            append("Content-Disposition: form-data; name=\"\(k)\"\r\n\r\n")
+            append("\(v)\r\n")
+        }
+        append("--\(boundary)\r\n")
+        append("Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName)\"\r\n")
+        append("Content-Type: \(mimeType)\r\n\r\n")
+        body.append(fileData)
+        append("\r\n--\(boundary)--\r\n")
+
+        var req = try request(path, method: "POST", query: [:])
+        req.setValue("multipart/form-data; boundary=\(boundary)",
+                     forHTTPHeaderField: "Content-Type")
+        req.httpBody = body
+
+        // A photo over a truck-stop connection is not a ten second request.
+        req.timeoutInterval = Config.uploadTimeout
+
+        return try await perform(req, as: type)
+    }
+
+    /// Raw bytes, for the photo endpoint.
+    ///
+    /// Job photographs are served by an endpoint that checks who is asking —
+    /// they are pictures of a stranger's plate and VIN — so they carry the
+    /// Authorization header like everything else. AsyncImage cannot send one,
+    /// which is why these are fetched here and handed to the view as Data.
+    func data(_ path: String, query: [String: String] = [:]) async throws -> Data {
+        let req = try request(path, method: "GET", query: query)
+        do {
+            let (data, response) = try await session.data(for: req)
+            let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+            guard (200..<300).contains(status) else {
+                throw APIError(message: "That photo could not be loaded.", status: status)
+            }
+            return data
+        } catch let e as APIError {
+            throw e
+        } catch {
+            throw APIError(message: "No connection.", status: 0)
+        }
+    }
+
     // MARK: - The one request function
 
     private func send<T: Decodable>(_ path: String, method: String,
                                     query: [String: String], body: Data?,
                                     as type: T.Type) async throws -> T {
+        var req = try request(path, method: method, query: query)
+        req.httpBody = body
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        return try await perform(req, as: type)
+    }
+
+    /// URL, query, language and auth header — everything every request shares.
+    private func request(_ path: String, method: String,
+                         query: [String: String]) throws -> URLRequest {
 
         // The leading slash is trimmed first. appendingPathComponent("/calls/board")
         // yields ".../api//calls/board", and the server's rewrite rule matches
@@ -138,12 +209,15 @@ actor API {
 
         var req = URLRequest(url: comps.url!)
         req.httpMethod = method
-        req.httpBody = body
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let token {
             req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
+        return req
+    }
 
+    /// Send it, and turn whatever comes back into either a payload or an error a
+    /// person can read.
+    private func perform<T: Decodable>(_ req: URLRequest, as type: T.Type) async throws -> T {
         let data: Data
         let response: URLResponse
         do {

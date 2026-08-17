@@ -37,7 +37,7 @@ struct SignedInView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var tab = Tab.board
 
-    enum Tab: Hashable { case board, mine, more }
+    enum Tab: Hashable { case board, mine, money, history, more }
 
     var body: some View {
         TabView(selection: $tab) {
@@ -49,6 +49,14 @@ struct SignedInView: View {
                 .tabItem { Label("My jobs", systemImage: "truck.box.fill") }
                 .badge(board.myJobs.count)
                 .tag(Tab.mine)
+
+            NavigationStack { MoneyView() }
+                .tabItem { Label("Money", systemImage: "dollarsign.circle.fill") }
+                .tag(Tab.money)
+
+            NavigationStack { HistoryView() }
+                .tabItem { Label("History", systemImage: "clock.arrow.circlepath") }
+                .tag(Tab.history)
 
             NavigationStack { MoreView() }
                 .tabItem { Label("More", systemImage: "ellipsis.circle") }
@@ -102,8 +110,7 @@ struct MoreView: View {
                         Text("Coming in the next builds")
                             .font(.system(size: 13, weight: .bold))
                             .foregroundStyle(Theme.inkDim)
-                        ForEach(["Money and withdrawals",
-                                 "Alerts",
+                        ForEach(["Alerts",
                                  "My rates",
                                  "Documents",
                                  "Company, trucks and equipment",

@@ -1,4 +1,5 @@
 import Foundation
+import CoreGraphics   // CGFloat
 
 /// Everything environment-specific, in one place.
 ///
@@ -27,4 +28,18 @@ enum Config {
     /// Requests give up rather than hang. A driver on one bar of LTE under an
     /// overpass needs to be told the network is bad, not shown a spinner.
     static let requestTimeout: TimeInterval = 20
+
+    /// Photographs get much longer than an ordinary request. Twenty seconds is
+    /// right for a JSON call and wrong for a 1.5MB upload from a yard with one
+    /// bar — the driver would be told the network failed while it was working.
+    static let uploadTimeout: TimeInterval = 90
+
+    /// Longest edge, in pixels, that a job photo is resized to before upload.
+    ///
+    /// A modern iPhone shoots around 12 megapixels — four or five megabytes,
+    /// times seven required shots, on truck-stop wifi. 1600px still resolves a
+    /// number plate, a VIN plate and a scratch in a door, which is the entire
+    /// purpose of these pictures.
+    static let photoMaxEdge: CGFloat = 1600
+    static let photoJPEGQuality: CGFloat = 0.8
 }

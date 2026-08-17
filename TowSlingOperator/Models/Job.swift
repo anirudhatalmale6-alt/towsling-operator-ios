@@ -54,6 +54,19 @@ struct Job: Identifiable, Decodable, Equatable {
     let expiresInSec: Int?
     let canRun: Bool?
 
+    // Settled money — present once the job is finished. These are what was
+    // actually paid, not an estimate, so history shows them in preference to
+    // towerNetEstimate.
+    let towerNet: Double?
+    let platformFee: Double?
+    let awardedAmount: Double?
+    let completedAt: String?
+
+    // The photo checklist, sent with each of the company's own jobs so the
+    // card can show what is still outstanding without a request per job.
+    let photoState: PhotoState?
+    let photos: [Photo]?
+
     enum CodingKeys: String, CodingKey {
         case id
         case callNumber = "call_number"
@@ -90,6 +103,12 @@ struct Job: Identifiable, Decodable, Equatable {
         case customerPhone = "customer_phone"
         case expiresInSec = "expires_in_sec"
         case canRun = "can_run"
+        case towerNet = "tower_net"
+        case platformFee = "platform_fee"
+        case awardedAmount = "awarded_amount"
+        case completedAt = "completed_at"
+        case photoState = "photo_state"
+        case photos
     }
 
     // MARK: - Presentation
@@ -156,6 +175,82 @@ struct Job: Identifiable, Decodable, Equatable {
     static let liveStatuses = ["awarded", "en_route", "on_scene", "in_progress"]
 
     var isLive: Bool { Job.liveStatuses.contains(status) }
+
+    /// What this job actually paid, once it is finished. Falls back to the
+    /// estimate only while the job is still running — never afterwards, because
+    /// a settled job showing an estimate is how a driver is told one number and
+    /// paid another.
+    var settledNet: Double? { towerNet }
+
+    var statusLabel: String {
+        switch status {
+        case "completed":   return "Completed"
+        case "goa":         return "Gone on arrival"
+        case "canceled":    return "Cancelled"
+        case "expired":     return "Expired"
+        case "awarded":     return "Accepted"
+        case "en_route":    return "On my way"
+        case "on_scene":    return "On scene"
+        case "in_progress": return "Towing"
+        case "open":        return "Open"
+        default:            return status.capitalized
+        }
+    }
+}
+
+/// The evidence checklist for one job — mirrors photoState() in includes/photos.php.
+struct PhotoState: Decodable, Equatable {
+    let required: Bool?
+    let items: [Item]?
+    let total: Int?
+    let hasGOA: Bool?
+    let complete: Bool?
+    let pickupDone: Bool?
+    let dropoffDone: Bool?
+    let missingSummary: String?
+
+    enum CodingKeys: String, CodingKey {
+        case required, items, total, complete
+        case hasGOA          = "has_goa"
+        case pickupDone      = "pickup_done"
+        case dropoffDone     = "dropoff_done"
+        case missingSummary  = "missing_summary"
+    }
+
+    struct Item: Decodable, Equatable, Identifiable {
+        let key: String
+        let stage: String
+        let label: String
+        let hint: String?
+        let done: Bool
+        let count: Int?
+        let photoID: Int?
+
+        var id: String { key }
+
+        enum CodingKeys: String, CodingKey {
+            case key, stage, label, hint, done, count
+            case photoID = "photo_id"
+        }
+    }
+
+    var doneCount: Int { (items ?? []).filter(\.done).count }
+    var totalCount: Int { (items ?? []).count }
+}
+
+struct Photo: Decodable, Equatable, Identifiable {
+    let id: Int
+    let photoType: String
+    let label: String?
+    let note: String?
+    let takenAt: String?
+    let url: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, label, note, url
+        case photoType = "photo_type"
+        case takenAt   = "taken_at"
+    }
 }
 
 /// GET /api/calls/board

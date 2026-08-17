@@ -270,6 +270,7 @@ def main():
 				INFOPLIST_KEY_CFBundleDisplayName = TowSling;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is shared with the customer only while you are working their job, so they can watch your truck arrive.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Photographing a vehicle before and after a tow is what protects you against a damage claim.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Only used to pick a job photo when the camera is not available, such as on a simulator.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;

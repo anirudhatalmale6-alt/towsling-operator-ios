@@ -9,6 +9,8 @@ struct MyJobsView: View {
     @State private var busyJobID: Int?
     @State private var actionError: String?
     @State private var completion: BoardStore.CompletionResult?
+    /// Set when Complete is pressed on a job still missing photographs.
+    @State private var confirmingIncomplete: Job?
 
     var body: some View {
         ZStack {
@@ -54,6 +56,28 @@ struct MyJobsView: View {
                                     set: { if !$0 { actionError = nil } })) {
             Button("OK", role: .cancel) { actionError = nil }
         } message: { Text(actionError ?? "") }
+        // Warn, do not block.
+        //
+        // Hard-refusing completion without every photograph would strand a
+        // driver at 2am on a job he has genuinely finished, and the money with
+        // it. He is told exactly what is missing and what it costs him if a
+        // claim comes, and then he decides — the server records the gap either
+        // way, so the evidence trail is honest about what was and was not taken.
+        .alert("Photos are missing",
+               isPresented: Binding(get: { confirmingIncomplete != nil },
+                                    set: { if !$0 { confirmingIncomplete = nil } })) {
+            Button("Take them now", role: .cancel) { confirmingIncomplete = nil }
+            Button("Complete anyway", role: .destructive) {
+                if let job = confirmingIncomplete {
+                    confirmingIncomplete = nil
+                    finish(job, force: true)
+                }
+            }
+        } message: {
+            Text("Still needed: \(confirmingIncomplete?.photoState?.missingSummary ?? "")."
+               + "\n\nWithout them a damage claim on this vehicle is your word "
+               + "against the customer's.")
+        }
         .alert("Job completed",
                isPresented: Binding(get: { completion != nil },
                                     set: { if !$0 { completion = nil } })) {
@@ -83,7 +107,14 @@ struct MyJobsView: View {
         }
     }
 
-    private func finish(_ job: Job) {
+    private func finish(_ job: Job, force: Bool = false) {
+        // The checklist rides along on every job the server sends, so this
+        // costs no extra request.
+        if !force, let photos = job.photoState,
+           photos.required == true, photos.complete != true {
+            confirmingIncomplete = job
+            return
+        }
         busyJobID = job.id
         Task {
             let result = await board.complete(job)
@@ -133,6 +164,32 @@ private struct LiveJobCard: View {
                 .padding(.top, 8)
             }
 
+            // The evidence, reachable from the job itself rather than buried
+            // somewhere else — it is taken at the vehicle, with the job open.
+            NavigationLink {
+                JobPhotosView(jobID: job.id, title: job.callNumber)
+            } label: {
+                HStack {
+                    Label(photoLabel, systemImage: photoComplete ? "checkmark.seal.fill" : "camera.fill")
+                        .font(.system(size: 14, weight: .semibold))
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12, weight: .bold))
+                }
+                .foregroundStyle(photoComplete ? Theme.green : Theme.amber)
+                .frame(maxWidth: .infinity)
+                .frame(height: 46)
+                .padding(.horizontal, 14)
+                .background(Theme.panel)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 11)
+                        .stroke(photoComplete ? Theme.green.opacity(0.4) : Theme.amber.opacity(0.4),
+                                lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 11))
+            }
+            .padding(.top, 8)
+
             // One button, whichever one comes next. A row of four with three
             // greyed out is how a driver taps the wrong one in the rain.
             if let next = nextStep {
@@ -146,6 +203,15 @@ private struct LiveJobCard: View {
                 .padding(.top, 10)
             }
         }
+    }
+
+    private var photoComplete: Bool { job.photoState?.complete == true }
+
+    private var photoLabel: String {
+        guard let s = job.photoState else { return "Photos" }
+        return photoComplete
+            ? "Photos — all \(s.totalCount) taken"
+            : "Photos — \(s.doneCount) of \(s.totalCount)"
     }
 
     private var nextStep: (status: String, label: String)? {

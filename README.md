@@ -68,16 +68,32 @@ works without any of that.
 - Accepting a job, with the ETA the customer watches count down
 - My jobs — call the customer, navigate to the pickup, and one button for
   whatever the next step is
+- **Job photos** — the four corners, plate, VIN and drop-off, taken with the
+  camera and stamped with where they were taken
 - Completing a job, including the case where the customer's card fails
+- **Money** — available, in escrow, in transit, lifetime, and withdrawals
+- **History** — finished work, searchable, with totals
+
+### Two rules those last three follow
+
+**Totals come from the server, over the whole filtered set.** Summing the rows
+on screen would total one page — filter to a month with 80 jobs in it, get the
+first 100 rows and a figure that looks entirely correct. The list says so
+explicitly when it is showing fewer rows than the total covers.
+
+**Earnings come from `payouts`, not `calls.tower_net`.** payouts is what the
+balance and the withdrawal button are built from, so it is the only figure that
+reconciles against what actually lands in a bank account.
 
 ## What is next
 
-Money and withdrawals · Alerts · Rates · Documents · Company, trucks and
-equipment · Taking-jobs switch · Push notifications · Live location while on a
-job.
+Alerts · Rates · Documents · Company, trucks and equipment · Taking-jobs
+switch · Push notifications · Live location while on a job.
 
-The last two need a real device and the bundle ID, so they come once that
-exists. Everything on that list already works on the website in the meantime.
+Push and live location need a real device and the registered bundle ID, so they
+come once that exists — **there are no push notifications in this app yet**, and
+nothing in it will make a phone buzz. Everything on that list already works on
+the website in the meantime.
 
 ## How it is put together
 
