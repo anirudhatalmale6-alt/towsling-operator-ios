@@ -135,21 +135,11 @@ private struct LiveJobCard: View {
         VStack(alignment: .leading, spacing: 0) {
             JobCard(job: job, showAccept: false)
 
-            // Now the job is ours, the customer's details are on it — the
-            // server only sends these once the company owns the job.
-            if let phone = job.customerPhone, !phone.isEmpty {
-                Link(destination: URL(string: "tel:\(phone.filter { $0.isNumber })")!) {
-                    Label("Call \(job.customerName ?? "customer") · \(phone)",
-                          systemImage: "phone.fill")
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 48)
-                        .background(Theme.green)
-                        .clipShape(RoundedRectangle(cornerRadius: 11))
-                }
-                .padding(.top, 10)
-            }
+            // The big green "Call the customer" button is gone at Ricardo's
+            // request. The number itself is still on the card above — the
+            // server sends it once the company owns the job — and iOS makes any
+            // phone number in text tappable, so the driver has not lost the
+            // ability to ring, only the button.
 
             if let address = job.pickupAddress, !address.isEmpty {
                 Button {
@@ -233,11 +223,24 @@ private struct LiveJobCard: View {
         }
     }
 
+    /// Google Maps if it is on the phone, Apple Maps if it is not.
+    ///
+    /// Drivers navigate on what they know, and for most of them that is Google.
+    /// canOpenURL on the comgooglemaps scheme is the only way to ask, and it
+    /// needs comgooglemaps in LSApplicationQueriesSchemes — without that entry
+    /// iOS answers false no matter what is installed, and the app quietly falls
+    /// back to Apple Maps forever with nothing to show why.
     private func openMaps(_ address: String) {
         let q = address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        // Apple Maps is always installed; Google Maps is not.
-        if let url = URL(string: "http://maps.apple.com/?daddr=\(q)") {
-            UIApplication.shared.open(url)
+
+        if let google = URL(string: "comgooglemaps://?daddr=\(q)&directionsmode=driving"),
+           UIApplication.shared.canOpenURL(google) {
+            UIApplication.shared.open(google)
+            return
+        }
+        // Apple Maps is always installed, so this always works.
+        if let apple = URL(string: "http://maps.apple.com/?daddr=\(q)") {
+            UIApplication.shared.open(apple)
         }
     }
 }

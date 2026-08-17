@@ -117,6 +117,16 @@ struct JobCard: View {
                 }
                 .fixedSize()
 
+                // How long is left to take it. The single most decisive number
+                // on the card after the money — a job with 40 seconds on it is
+                // a different decision from one with nine minutes, and without
+                // it an operator taps Accept and loses the race with no idea
+                // why. The web board has always shown this; the app did not.
+                if job.status == "open", let secs = job.expiresInSec {
+                    JobCountdown(secondsRemaining: secs)
+                        .padding(.leading, 10)
+                }
+
                 Spacer(minLength: 0)
 
                 VStack(alignment: .trailing, spacing: 1) {
@@ -168,5 +178,56 @@ struct JobCard: View {
         if let c = job.vehicleColor, !c.isEmpty { parts.append(c) }
         if let n = job.customerName, !n.isEmpty { parts.append(n) }
         return parts.joined(separator: " · ")
+    }
+}
+
+
+/// The time left on an open job, ticking.
+///
+/// The deadline is frozen ONCE from the server's `expires_in_sec` and counted
+/// down from there. It is deliberately not recomputed from `expires_at`: that
+/// field is a MySQL datetime in the server's timezone, and parsing it on the
+/// phone is how the web board once showed 0:00 on a job with 24 minutes left.
+/// A relative number of seconds carries no timezone to get wrong.
+///
+/// TimelineView rather than a Timer — it stops on its own when the card
+/// scrolls away or the app backgrounds, so a board of thirty jobs is not
+/// thirty repeating timers.
+struct JobCountdown: View {
+    let secondsRemaining: Int
+
+    @State private var deadline: Date = .now
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 1)) { context in
+            let left = max(0, Int(deadline.timeIntervalSince(context.date).rounded(.up)))
+            VStack(spacing: 1) {
+                Text(clock(left))
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundStyle(colour(left))
+                Text(left == 0 ? "expired" : "left")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Theme.inkFaint)
+            }
+            .fixedSize()
+        }
+        // Re-synced whenever the board sends a fresh figure, so a card that has
+        // been on screen through several refreshes does not drift.
+        .task(id: secondsRemaining) {
+            deadline = Date().addingTimeInterval(TimeInterval(secondsRemaining))
+        }
+    }
+
+    private func clock(_ s: Int) -> String {
+        String(format: "%d:%02d", s / 60, s % 60)
+    }
+
+    /// Under five minutes is when an operator should be deciding now.
+    private func colour(_ s: Int) -> Color {
+        if s == 0   { return Theme.inkFaint }
+        if s < 300  { return Theme.red }
+        if s < 600  { return Theme.amber }
+        return Theme.ink
     }
 }

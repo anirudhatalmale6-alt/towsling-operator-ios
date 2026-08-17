@@ -261,9 +261,22 @@ def main():
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;"""
 
+    # CODE_SIGN_ENTITLEMENTS carries aps-environment; without it
+    # registerForRemoteNotifications fails and no push token ever arrives.
+    #
+    # INFOPLIST_FILE + GENERATE_INFOPLIST_FILE = YES together: Xcode merges the
+    # INFOPLIST_KEY_* settings INTO that file. It exists only to carry
+    # LSApplicationQueriesSchemes (needed for the Google Maps check), which has
+    # no INFOPLIST_KEY_ equivalent because it is an array.
+    #
+    # Only plain ASCII, no // comments: a pbxproj is an OpenStep plist, and
+    # putting source-style comments in one is a good way to make a project that
+    # will not open.
     target_common = f"""				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = TowSlingOperator/TowSlingOperator.entitlements;
+				INFOPLIST_FILE = TowSlingOperator/Info.plist;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

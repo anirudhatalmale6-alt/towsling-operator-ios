@@ -5,6 +5,7 @@ struct LoginView: View {
 
     @State private var email = ""
     @State private var password = ""
+    @State private var signingUp = false
     @FocusState private var focus: Field?
 
     private enum Field { case email, password }
@@ -17,13 +18,16 @@ struct LoginView: View {
                 VStack(spacing: 0) {
                     Spacer(minLength: 60)
 
+                    // No white tile any more. It existed because the previous
+                    // mark's lower half was a near-black navy that disappeared
+                    // into this background; the orange artwork carries its own
+                    // contrast and has a transparent background, so a white
+                    // card around it now reads as a sticker rather than a logo.
                     Image("Logo")
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 56)
-                        .padding(10)
-                        .background(Color.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 13))
+                        .frame(height: 68)
+                        .shadow(color: .black.opacity(0.45), radius: 8, y: 2)
 
                     Text("TowSling")
                         .font(.system(size: 26, weight: .bold))
@@ -84,6 +88,20 @@ struct LoginView: View {
                         .multilineTextAlignment(.center)
                         .padding(.top, 18)
 
+                    // Apple expects an app whose content sits behind a login to
+                    // offer a way to create the account without leaving it —
+                    // sending someone to a website to sign up is a common
+                    // rejection under guideline 4.0.
+                    HStack(spacing: 5) {
+                        Text("New here?")
+                            .foregroundStyle(Theme.inkFaint)
+                        Button("Sign up your tow company") { signingUp = true }
+                            .foregroundStyle(Theme.accent)
+                            .fontWeight(.semibold)
+                    }
+                    .font(.system(size: 13.5))
+                    .padding(.top, 16)
+
                     Spacer(minLength: 40)
                 }
                 .padding(.horizontal, 20)
@@ -91,6 +109,10 @@ struct LoginView: View {
                 .frame(maxWidth: .infinity)
             }
             .scrollDismissesKeyboard(.interactively)
+        }
+        .sheet(isPresented: $signingUp) {
+            SignupView()
+                .environmentObject(session)
         }
     }
 

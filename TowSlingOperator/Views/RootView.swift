@@ -83,7 +83,9 @@ struct SignedInView: View {
 /// honestly rather than hidden, so it is obvious what is still coming.
 struct MoreView: View {
     @EnvironmentObject private var session: Session
+    @ObservedObject private var push = PushRegistrar.shared   // owned by the app, not by this view
     @State private var signingOut = false
+    @State private var deleting = false
 
     var body: some View {
         ZStack {
@@ -105,6 +107,37 @@ struct MoreView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .cardBackground()
                     }
+
+                    // Whether alerts are actually on. Silence is the one thing
+                    // this app cannot afford to be ambiguous about: an operator
+                    // who thinks push is working and is getting nothing simply
+                    // concludes there is no work about.
+                    HStack(alignment: .top, spacing: 9) {
+                        Image(systemName: push.authorized ? "bell.badge.fill" : "bell.slash.fill")
+                            .font(.system(size: 14))
+                            .foregroundStyle(push.authorized ? Theme.green : Theme.amber)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(push.authorized ? "Job alerts are on" : "Job alerts are off")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(Theme.ink)
+                            Text(push.authorized
+                                 ? "You will get a notification when a job comes up near you."
+                                 : "Turn notifications on for TowSling in the Settings app, "
+                                 + "or you will only see jobs while the app is open.")
+                                .font(.system(size: 12))
+                                .foregroundStyle(Theme.inkFaint)
+                                .fixedSize(horizontal: false, vertical: true)
+                            if let err = push.lastError {
+                                Text(err)
+                                    .font(.system(size: 11))
+                                    .foregroundStyle(Theme.amber)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                        Spacer(minLength: 0)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .cardBackground()
 
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Coming in the next builds")
@@ -145,11 +178,29 @@ struct MoreView: View {
                         else { Text("Sign out") }
                     }
                     .buttonStyle(GhostButtonStyle())
+
+                    // Required by Apple for any app that creates accounts, and
+                    // it has to be reachable in the app rather than being a link
+                    // to a website. Deliberately last, and deliberately not
+                    // styled like the buttons above it.
+                    Button(role: .destructive) {
+                        deleting = true
+                    } label: {
+                        Text("Delete my account")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(Theme.red)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 46)
+                    }
+                    .padding(.top, 6)
                 }
                 .padding(16)
             }
         }
         .navigationTitle("More")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $deleting) {
+            DeleteAccountView().environmentObject(session)
+        }
     }
 }

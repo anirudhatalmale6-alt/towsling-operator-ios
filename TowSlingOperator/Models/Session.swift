@@ -121,6 +121,72 @@ final class Session: ObservableObject {
         }
     }
 
+    /// Create a towing-company account and sign straight into it.
+    ///
+    /// The server's `register` endpoint answers with the same token/user/account
+    /// shape as login, so there is no second round trip and no moment where an
+    /// account exists that the person is not signed into.
+    ///
+    /// Returns an error message, or nil on success.
+    func signUp(company: String, firstName: String, lastName: String,
+                companyPhone: String, email: String, password: String) async -> String? {
+        do {
+            let r = try await API.shared.post(
+                "/auth/register",
+                body: [
+                    "account_type":  "tower",
+                    "company_name":  company,
+                    "first_name":    firstName,
+                    "last_name":     lastName,
+                    "company_phone": companyPhone,
+                    "phone":         companyPhone,
+                    "email":         email,
+                    "password":      password,
+                    "accept_terms":  true,
+                ],
+                as: LoginResponse.self
+            )
+            Keychain.write(r.token, account: keychainAccount)
+            await API.shared.setToken(r.token)
+            account = r.account
+            user = r.user
+            return nil
+        } catch let e as APIError {
+            return e.message
+        } catch {
+            return "Could not create the account. Try again."
+        }
+    }
+
+    /// Close the company account for good.
+    ///
+    /// Apple requires an app that creates accounts to let people delete them
+    /// from inside it — a link to a website or a "contact support" line is a
+    /// rejection. The server does the real work and keeps its own guards:
+    /// owner only, the password again, the word DELETE typed out, and a refusal
+    /// while there is money or a live job outstanding.
+    ///
+    /// Returns an error message, or nil once the account is gone.
+    func deleteAccount(password: String, confirm: String) async -> String? {
+        do {
+            try await API.shared.postIgnoringResult(
+                "/account/close",
+                body: ["password": password, "confirm": confirm]
+            )
+            // Signed out locally without calling logout — the account it would
+            // authenticate against no longer exists.
+            await API.shared.setToken(nil)
+            Keychain.delete(account: keychainAccount)
+            account = nil
+            user = nil
+            return nil
+        } catch let e as APIError {
+            return e.message
+        } catch {
+            return "Could not close the account. Try again."
+        }
+    }
+
     func signOut() async {
         // Tell the server, but do not wait on it to decide. If the network is
         // down the person in front of us still gets signed out of this phone,
