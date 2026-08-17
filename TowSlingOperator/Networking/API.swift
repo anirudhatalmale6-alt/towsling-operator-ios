@@ -91,7 +91,9 @@ actor API {
 
     // MARK: - Verbs
 
-    func get<T: Decodable>(_ path: String, query: [String: String] = [],
+    // [:] not [] — an empty DICTIONARY literal. `[]` is an empty array and Swift
+    // says so: "Use [:] to get an empty dictionary literal".
+    func get<T: Decodable>(_ path: String, query: [String: String] = [:],
                            as type: T.Type) async throws -> T {
         try await send(path, method: "GET", query: query, body: nil, as: type)
     }

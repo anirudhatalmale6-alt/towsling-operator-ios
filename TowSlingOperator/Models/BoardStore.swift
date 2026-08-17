@@ -15,7 +15,16 @@ final class BoardStore: ObservableObject {
     @Published private(set) var myJobs: [Job] = []
     @Published private(set) var verification: Verification?
     @Published private(set) var isLoading = false
-    @Published var error: String?
+    /// Named errorMessage, NOT error.
+    ///
+    /// A bare `catch { }` block binds an implicit constant called `error` of
+    /// type `any Error`, which shadows a property of that name. Assigning a
+    /// String to it then fails twice over — "cannot assign to value: 'error' is
+    /// immutable" and "cannot assign value of type 'String' to type 'any
+    /// Error'" — and the message points at the assignment rather than at the
+    /// name, so it reads as nonsense. Renaming removes the trap for good
+    /// instead of leaving it for the next catch block somebody adds.
+    @Published var errorMessage: String?
 
     /// Set when a request comes back 401 so the root view can sign out.
     @Published var sessionExpired = false
@@ -53,15 +62,15 @@ final class BoardStore: ObservableObject {
             let board = try await API.shared.get("/calls/board", as: BoardResponse.self)
             jobs = board.calls
             verification = board.verification
-            error = nil
+            errorMessage = nil
         } catch let e as APIError {
             if e.isUnauthorized { sessionExpired = true; return }
             // Keep whatever is on screen. Replacing a list of real jobs with an
             // error because one poll failed is worse than showing them a few
             // seconds stale — the operator can still act on what is there.
-            error = e.message
+            errorMessage = e.message
         } catch {
-            error = "Could not load jobs."
+            errorMessage = "Could not load jobs."
         }
 
         await refreshMine()

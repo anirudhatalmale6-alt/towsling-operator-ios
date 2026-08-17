@@ -18,8 +18,8 @@ struct BoardView: View {
                         VerificationBanner(verification: v)
                     }
 
-                    if let error = board.error {
-                        Text(error)
+                    if let message = board.errorMessage {
+                        Text(message)
                             .font(.system(size: 13.5, weight: .medium))
                             .foregroundStyle(Theme.amber)
                             .frame(maxWidth: .infinity, alignment: .leading)
