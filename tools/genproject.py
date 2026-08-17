@@ -346,10 +346,88 @@ def main():
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(L) + "\n", encoding="utf-8")
 
+    write_scheme(target_uid, product_uid)
+
     print(f"wrote {out.relative_to(ROOT)}")
     print(f"  {len([f for f in sources])} swift files, {len(resources)} resource(s)")
     for p in sources:
         print("   ", p.relative_to(SRC))
+
+
+
+def write_scheme(target_uid: str, product_uid: str) -> None:
+    """
+    A SHARED scheme, committed to the repo.
+
+    Xcode invents one the first time somebody opens the project, but it puts it
+    in xcuserdata — per-user, gitignored, and invisible to `xcodebuild`. So a
+    fresh clone has no scheme to name, and a command line build fails with
+    "scheme not found" before it has compiled a line. Sharing it means the
+    project builds the same way for Xcode and for the terminal, which matters
+    when the person who wrote it cannot run either.
+    """
+    scheme = f"""<?xml version="1.0" encoding="UTF-8"?>
+<Scheme LastUpgradeVersion = "1500" version = "1.7">
+   <BuildAction parallelizeBuildables = "YES" buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES"
+                           buildForProfiling = "YES" buildForArchiving = "YES"
+                           buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "{target_uid}"
+               BuildableName = "{APP}.app"
+               BlueprintName = "{APP}"
+               ReferencedContainer = "container:{APP}.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <Testables>
+      </Testables>
+   </TestAction>
+   <LaunchAction buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0" useCustomWorkingDirectory = "NO" ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES" debugServiceExtension = "internal"
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "{target_uid}"
+            BuildableName = "{APP}.app"
+            BlueprintName = "{APP}"
+            ReferencedContainer = "container:{APP}.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </LaunchAction>
+   <ProfileAction buildConfiguration = "Release" shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = "" useCustomWorkingDirectory = "NO" debugDocumentVersioning = "YES">
+      <BuildableProductRunnable runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "{target_uid}"
+            BuildableName = "{APP}.app"
+            BlueprintName = "{APP}"
+            ReferencedContainer = "container:{APP}.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </ProfileAction>
+   <AnalyzeAction buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction buildConfiguration = "Release" revealArchiveInOrganizer = "YES">
+   </ArchiveAction>
+</Scheme>
+"""
+    path = ROOT / f"{APP}.xcodeproj" / "xcshareddata" / "xcschemes" / f"{APP}.xcscheme"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(scheme, encoding="utf-8")
+    print(f"wrote {path.relative_to(ROOT)}")
 
 
 if __name__ == "__main__":

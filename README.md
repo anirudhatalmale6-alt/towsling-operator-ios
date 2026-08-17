@@ -32,6 +32,28 @@ Xcode 16 — on anything older the project simply will not open, and the error
 does not say so. Since the build machine is not the machine this is written on,
 the format went back to one every Xcode since 14 can read.
 
+### If the build fails
+
+Get the actual message — it is the only thing that says what is wrong:
+
+```
+cd TowSlingOperator
+xcodebuild -project TowSlingOperator.xcodeproj \
+           -scheme TowSlingOperator \
+           -sdk iphonesimulator build 2>&1 | tail -40
+```
+
+The scheme is shared and committed, so this works on a fresh clone. Xcode's own
+Report Navigator (last tab in the left sidebar) shows the same thing.
+
+Two failures that are not compile errors and do not say so:
+
+- **"Signing for … requires a development team"** — you are building to a
+  device, not the simulator. Either pick a simulator from the target menu, or
+  set your team under Signing & Capabilities.
+- **The project will not open at all** — you are on Xcode 13 or older. The
+  format needs 14+.
+
 ### Running on a real phone
 
 Needs the bundle ID `com.towsling.operator` registered in the Apple developer
