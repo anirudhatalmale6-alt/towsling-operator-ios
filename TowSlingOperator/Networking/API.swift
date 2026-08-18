@@ -71,6 +71,62 @@ extension KeyedDecodingContainer {
     }
 }
 
+/// The same tolerance, for a value that is genuinely allowed to be absent.
+///
+/// Written after `base_lat` — a MySQL DECIMAL, which PDO returns as a STRING —
+/// took out the entire My-company screen with "something went wrong". One field
+/// of the wrong JSON type fails the whole object, so a company that had set a
+/// yard address could not open the screen at all while a company that had not
+/// set one could. That looked like an account problem and was a type problem.
+///
+/// The server now sends a number. This exists so that the next column somebody
+/// adds costs a wrong-looking field instead of a dead screen.
+@propertyWrapper
+struct FlexibleOptional: Decodable, Equatable {
+    var wrappedValue: Double?
+
+    init(wrappedValue: Double?) { self.wrappedValue = wrappedValue }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if c.decodeNil() { wrappedValue = nil; return }
+        if let d = try? c.decode(Double.self) { wrappedValue = d; return }
+        if let s = try? c.decode(String.self) { wrappedValue = Double(s); return }
+        wrappedValue = nil
+    }
+}
+
+extension KeyedDecodingContainer {
+    /// An absent key is nil, not a thrown error.
+    func decode(_ type: FlexibleOptional.Type, forKey key: Key) throws -> FlexibleOptional {
+        try decodeIfPresent(FlexibleOptional.self, forKey: key) ?? FlexibleOptional(wrappedValue: nil)
+    }
+}
+
+/// Same idea for whole numbers. MySQL INT columns are usually fine, but a
+/// COUNT(*) or a SUM() comes back as a string from the same driver.
+@propertyWrapper
+struct FlexibleInt: Decodable, Equatable {
+    var wrappedValue: Int?
+
+    init(wrappedValue: Int?) { self.wrappedValue = wrappedValue }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if c.decodeNil() { wrappedValue = nil; return }
+        if let n = try? c.decode(Int.self) { wrappedValue = n; return }
+        if let d = try? c.decode(Double.self) { wrappedValue = Int(d); return }
+        if let s = try? c.decode(String.self) { wrappedValue = Int(s) ?? Int(Double(s) ?? 0) }
+        else { wrappedValue = nil }
+    }
+}
+
+extension KeyedDecodingContainer {
+    func decode(_ type: FlexibleInt.Type, forKey key: Key) throws -> FlexibleInt {
+        try decodeIfPresent(FlexibleInt.self, forKey: key) ?? FlexibleInt(wrappedValue: nil)
+    }
+}
+
 /// One HTTP client for the whole app.
 actor API {
     static let shared = API()

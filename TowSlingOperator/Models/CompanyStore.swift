@@ -19,10 +19,12 @@ struct Company: Decodable, Equatable {
     let verificationStatus: String?
     let dotNumber: String?
     let mcNumber: String?
-    let serviceRadiusMiles: Int?
-    let baseLat: Double?
-    let baseLng: Double?
-    let trucksCount: Int?
+    @FlexibleInt var serviceRadiusMiles: Int?
+    // DECIMAL columns. See FlexibleOptional in API.swift — these arrived as
+    // JSON strings and killed the whole screen.
+    @FlexibleOptional var baseLat: Double?
+    @FlexibleOptional var baseLng: Double?
+    @FlexibleInt var trucksCount: Int?
     let emailVerified: Bool?
     let phoneVerified: Bool?
 

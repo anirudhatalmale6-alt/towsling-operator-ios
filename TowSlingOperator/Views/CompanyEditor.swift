@@ -22,6 +22,10 @@ struct CompanyEditor: View {
     @State private var mc = ""
     @State private var is247 = false
     @State private var flags: [String: Bool] = [:]
+    /// Set only when a suggestion was resolved. Sent as base_lat/base_lng so
+    /// the yard actually moves; left nil, the stored position is untouched.
+    @State private var resolvedLat: Double?
+    @State private var resolvedLng: Double?
 
     var body: some View {
         NavigationStack {
@@ -42,9 +46,20 @@ struct CompanyEditor: View {
                                 .foregroundStyle(Theme.inkFaint)
                                 .fixedSize(horizontal: false, vertical: true)
 
-                            field("Street") {
-                                TextField("", text: $address)
-                                    .textContentType(.streetAddressLine1)
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Street")
+                                    .font(.system(size: 12.5, weight: .bold))
+                                    .foregroundStyle(Theme.inkDim)
+                                AddressField(text: $address) { r in
+                                    // The whole point of the suggestion: a real
+                                    // position, not just tidier text.
+                                    address  = r.address
+                                    if let c = r.city  { city = c }
+                                    if let st = r.state { state = st }
+                                    if let z = r.zip   { zip = z }
+                                    resolvedLat = r.lat
+                                    resolvedLng = r.lng
+                                }
                             }
                             field("City") {
                                 TextField("", text: $city)
@@ -63,16 +78,30 @@ struct CompanyEditor: View {
                                 }
                             }
 
-                            // Said plainly rather than left as a surprise. The
-                            // app cannot geocode an address, so typing one here
-                            // does not by itself move the point jobs are
-                            // measured from.
-                            Text("Changing the address here updates your record. The map point "
-                               + "it is measured from is set on the website, where the address "
-                               + "is looked up properly.")
-                                .font(.system(size: 11.5))
-                                .foregroundStyle(Theme.amber)
-                                .fixedSize(horizontal: false, vertical: true)
+                            // The position, said honestly. An address typed
+                            // and never looked up leaves this company matched
+                            // from its state centroid, and nothing on screen
+                            // would say so.
+                            if resolvedLat != nil {
+                                Label("Map position set from the address you picked.",
+                                      systemImage: "checkmark.circle.fill")
+                                    .font(.system(size: 11.5))
+                                    .foregroundStyle(Theme.green)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            } else if company.baseSet {
+                                Text("Pick a suggestion if you move yard \u{2014} typing the address "
+                                   + "alone does not move the point your jobs are measured from.")
+                                    .font(.system(size: 11.5))
+                                    .foregroundStyle(Theme.inkFaint)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            } else {
+                                Label("No map position yet. Pick a suggestion so jobs are measured "
+                                    + "from your yard instead of the middle of your state.",
+                                      systemImage: "exclamationmark.triangle.fill")
+                                    .font(.system(size: 11.5))
+                                    .foregroundStyle(Theme.amber)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
                         .cardBackground(padding: 16)
 
@@ -174,6 +203,13 @@ struct CompanyEditor: View {
         ]
         if let r = Int(radiusText.trimmingCharacters(in: .whitespaces)), r > 0 {
             body["service_radius_miles"] = r
+        }
+        // Only when a suggestion was actually resolved. Sending nothing leaves
+        // the stored yard alone, which is right for somebody who only came in
+        // here to tick a checkbox.
+        if let lat = resolvedLat, let lng = resolvedLng {
+            body["base_lat"] = lat
+            body["base_lng"] = lng
         }
         // Every flag, every time. Sending only the changed ones would work until
         // somebody unticks the last one on a screen that then sends nothing.

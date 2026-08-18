@@ -189,21 +189,6 @@ struct MoreView: View {
                     }
                     .cardBackground(padding: 0)
 
-                    // Still on the website only. Named rather than left as a
-                    // gap somebody has to go hunting for.
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Still on the website only")
-                            .font(.system(size: 12.5, weight: .bold))
-                            .foregroundStyle(Theme.inkDim)
-                        Text("Extra logins for your staff, and the map point your yard address "
-                           + "is looked up to.")
-                            .font(.system(size: 12))
-                            .foregroundStyle(Theme.inkFaint)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .cardBackground()
-
                     Link("Support", destination: Config.supportURL)
                         .buttonStyle(GhostButtonStyle())
 

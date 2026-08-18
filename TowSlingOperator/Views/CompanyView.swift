@@ -11,6 +11,7 @@ struct CompanyView: View {
     @State private var editing: Truck?
     @State private var addingTruck = false
     @State private var editingCompany = false
+    @State private var verifying: VerifyView.Channel?
 
     var body: some View {
         ZStack {
@@ -56,6 +57,13 @@ struct CompanyView: View {
                 Task { await store.saveTruck(updated, isNew: false) }
             } onDelete: {
                 Task { await store.deleteTruck(truck) }
+            }
+        }
+        .sheet(item: $verifying) { ch in
+            VerifyView(channel: ch,
+                       destination: ch == .email ? (store.company?.email ?? "")
+                                                 : (store.company?.phone ?? "")) {
+                Task { await store.load() }
             }
         }
         .sheet(isPresented: $editingCompany) {
@@ -159,8 +167,11 @@ struct CompanyView: View {
                 .foregroundStyle(Theme.ink)
 
             row("Legal name", company.legalName)
-            row("Email", company.email, verified: company.emailVerified)
-            row("Phone", company.phone, verified: company.phoneVerified)
+            // Tappable while unconfirmed. These two are not paperwork: the
+            // board refuses a job until both are done, so a row that only
+            // reports the problem and offers no way to fix it is a dead end.
+            verifiableRow("Email", company.email, done: company.emailVerified == true, channel: .email)
+            verifiableRow("Phone", company.phone, done: company.phoneVerified == true, channel: .phone)
             row("Address", [company.address, company.city, company.state, company.zip]
                             .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: ", "))
             row("DOT", company.dotNumber)
@@ -265,6 +276,35 @@ struct CompanyView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .cardBackground()
+    }
+
+    /// A detail row that offers to fix itself.
+    @ViewBuilder
+    private func verifiableRow(_ label: String, _ value: String?,
+                               done: Bool, channel: VerifyView.Channel) -> some View {
+        if let value, !value.isEmpty {
+            HStack(alignment: .top) {
+                Text(label)
+                    .font(.system(size: 12.5))
+                    .foregroundStyle(Theme.inkFaint)
+                    .frame(width: 108, alignment: .leading)
+                Text(value)
+                    .font(.system(size: 13.5))
+                    .foregroundStyle(Theme.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                if done {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 11))
+                        .foregroundStyle(Theme.green)
+                }
+                Spacer(minLength: 0)
+                if !done {
+                    Button("Confirm") { verifying = channel }
+                        .font(.system(size: 12.5, weight: .bold))
+                        .foregroundStyle(Theme.accent)
+                }
+            }
+        }
     }
 
     @ViewBuilder
