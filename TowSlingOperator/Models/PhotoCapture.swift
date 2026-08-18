@@ -4,12 +4,20 @@ import CoreLocation
 
 /// The camera, wrapped so SwiftUI can present it.
 ///
-/// UIImagePickerController rather than PhotosPicker: this is evidence, and it
-/// should be taken now, at the vehicle, not chosen from a library of pictures
-/// that could be of anything from any day. The library is offered only where
-/// there is no camera at all — a simulator — because otherwise the screen is
-/// simply dead during testing.
+/// UIImagePickerController rather than PhotosPicker: this is evidence, and the
+/// camera is the default every time, because a photograph taken now at the
+/// vehicle is worth something in a dispute and one chosen from a library could
+/// be of anything from any day.
+///
+/// The library is still offered as a second choice rather than hidden. A driver
+/// whose camera permission is switched off, one who shot the damage in another
+/// app before the job was accepted, and anyone testing on a simulator all need
+/// a way in — and the server records WHICH of the two it was, so the difference
+/// survives into the record instead of being quietly flattened.
 struct CameraPicker: UIViewControllerRepresentable {
+    /// `.camera` or `.photoLibrary`. Falls back to the library wherever there
+    /// is no camera, which is every simulator.
+    var source: UIImagePickerController.SourceType = .camera
     let onImage: (UIImage) -> Void
     /// Called on both paths — picked and cancelled.
     ///
@@ -27,7 +35,10 @@ struct CameraPicker: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
-        picker.sourceType = Self.cameraAvailable ? .camera : .photoLibrary
+        // Asking for a camera that is not there gives a black sheet with no
+        // explanation, so the library is the floor whatever was requested.
+        picker.sourceType = (source == .camera && !Self.cameraAvailable)
+            ? .photoLibrary : source
         picker.delegate = context.coordinator
         return picker
     }

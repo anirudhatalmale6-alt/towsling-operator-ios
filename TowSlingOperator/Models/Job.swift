@@ -245,12 +245,19 @@ struct Photo: Decodable, Equatable, Identifiable {
     let note: String?
     let takenAt: String?
     let url: String?
+    /// "camera", "library" or "unknown". Optional so an older server that does
+    /// not send it yet decodes rather than failing the whole list.
+    let source: String?
 
     enum CodingKeys: String, CodingKey {
-        case id, label, note, url
+        case id, label, note, url, source
         case photoType = "photo_type"
         case takenAt   = "taken_at"
     }
+
+    /// Worth saying out loud on screen. Only a library pick is called out —
+    /// labelling the normal case adds noise to every photograph.
+    var isFromLibrary: Bool { source == "library" }
 }
 
 /// GET /api/calls/board

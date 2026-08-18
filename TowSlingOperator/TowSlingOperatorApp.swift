@@ -6,7 +6,18 @@ import UIKit
 /// SwiftUI has no way to get one — `didRegisterForRemoteNotificationsWithDeviceToken`
 /// is a UIApplicationDelegate callback and there is no SwiftUI equivalent, so a
 /// delegate is required however little else it does.
-final class AppDelegate: NSObject, UIApplicationDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions:
+                        [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        // Set HERE and nowhere else. When a tap on a notification is what
+        // launched the app, iOS delivers that tap to the delegate during
+        // launch — a delegate assigned later, from a view's .onAppear say, is
+        // assigned after the moment has passed and the tap is lost.
+        UNUserNotificationCenter.current().delegate = self
+        return true
+    }
 
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -19,6 +30,33 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         // setting problem rather than anything the driver did. Recorded so the
         // Alerts row can say something truthful instead of staying silent.
         Task { @MainActor in PushRegistrar.shared.failed(error) }
+    }
+
+    // MARK: - Notifications that arrive while the app is open
+
+    /// Show the banner even though the app is frontmost.
+    ///
+    /// Without this method iOS shows NOTHING for a push that lands while the
+    /// app is on screen — no banner, no sound — and hands it silently to the
+    /// app instead. Apple still answers 200 and the server still records a
+    /// successful delivery, so every log says the notification worked.
+    ///
+    /// A driver staring at the board is precisely who needs to be told a job
+    /// has come in, so the banner is shown regardless of what he is looking at.
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler:
+                                   @escaping (UNNotificationPresentationOptions) -> Void) {
+        PushNotifications.handle(notification.request.content.userInfo, tapped: false)
+        completionHandler([.banner, .list, .sound])
+    }
+
+    /// The driver tapped it. Take him to the job.
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        PushNotifications.handle(response.notification.request.content.userInfo, tapped: true)
+        completionHandler()
     }
 }
 

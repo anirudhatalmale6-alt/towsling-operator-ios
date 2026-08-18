@@ -123,3 +123,50 @@ final class PushRegistrar: NSObject, ObservableObject {
         return "production"
     }()
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  WHAT HAPPENS WHEN ONE ARRIVES
+//
+//  iOS does NOT show a banner for a push that arrives while the app is the
+//  frontmost thing on screen. It hands the notification to the app instead and
+//  assumes the app will do something better with it. If nothing is listening,
+//  the notification is simply absorbed — Apple returned 200, the server logged a
+//  successful delivery, and the phone stayed silent. From the outside that is
+//  indistinguishable from push being broken, and it is exactly the case a
+//  developer hits first, because he is holding the app open watching for it.
+//
+//  Two notifications rather than one, because a push that lands and a push that
+//  is TAPPED mean different things: the first should quietly bring the board up
+//  to date, the second should take the driver to the job.
+// ═══════════════════════════════════════════════════════════════════════════
+enum PushNotifications {
+
+    /// A push arrived — foreground or tapped. Refresh whatever is on screen.
+    static let arrived = Notification.Name("TowSlingPushArrived")
+    /// A push was TAPPED. Go to the job it names.
+    static let openJob = Notification.Name("TowSlingPushOpenJob")
+
+    static func handle(_ userInfo: [AnyHashable: Any], tapped: Bool) {
+        let callID = Self.callID(from: userInfo)
+        Task { @MainActor in
+            var info: [AnyHashable: Any] = [:]
+            if let callID { info["call_id"] = callID }
+            NotificationCenter.default.post(name: arrived, object: nil, userInfo: info)
+            if tapped, let callID {
+                NotificationCenter.default.post(
+                    name: openJob, object: nil, userInfo: ["call_id": callID]
+                )
+            }
+        }
+    }
+
+    /// call_id comes back as a JSON number, but anything that has been through
+    /// a form field or a settings table arrives as a string. Both are read
+    /// rather than trusting one and silently losing the job id.
+    static func callID(from userInfo: [AnyHashable: Any]) -> Int? {
+        if let n = userInfo["call_id"] as? Int { return n }
+        if let n = userInfo["call_id"] as? NSNumber { return n.intValue }
+        if let s = userInfo["call_id"] as? String { return Int(s) }
+        return nil
+    }
+}

@@ -13,8 +13,20 @@ struct JobPhotosView: View {
     var canCapture: Bool = true
 
     @StateObject private var store = PhotoStore()
-    @State private var capturing: String?
+    /// The slot whose source is being chosen — camera or library.
+    @State private var choosingFor: String?
+    /// The slot being photographed, and from where.
+    @State private var capturing: Capture?
     @State private var viewing: Photo?
+
+    /// Identifiable so the sheet can key off it. A plain String pair would
+    /// need a separate Bool, and the two drift apart the moment a tap lands
+    /// while the sheet is still animating away.
+    struct Capture: Identifiable {
+        let slot: String
+        let source: UIImagePickerController.SourceType
+        var id: String { slot + (source == .camera ? ":cam" : ":lib") }
+    }
 
     private let columns = [GridItem(.flexible(), spacing: 10),
                            GridItem(.flexible(), spacing: 10)]
@@ -41,7 +53,7 @@ struct JobPhotosView: View {
                                 SlotTile(item: item,
                                          uploading: store.uploading == item.key,
                                          canCapture: canCapture) {
-                                    capturing = item.key
+                                    choosingFor = item.key
                                 }
                             }
                         }
@@ -56,17 +68,37 @@ struct JobPhotosView: View {
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .task { await store.load(jobID: jobID) }
-        .sheet(isPresented: Binding(get: { capturing != nil },
-                                    set: { if !$0 { capturing = nil } })) {
-            if let type = capturing {
-                CameraPicker(
-                    onImage: { image in
-                        Task { await store.upload(jobID: jobID, type: type, image: image) }
-                    },
-                    onFinish: { capturing = nil }
-                )
-                .ignoresSafeArea()
+        // Camera first and named first, because that is the one that is worth
+        // anything if this job is ever argued about.
+        .confirmationDialog("Add this photo",
+                            isPresented: Binding(get: { choosingFor != nil },
+                                                 set: { if !$0 { choosingFor = nil } }),
+                            titleVisibility: .visible) {
+            Button("Take a photo now") {
+                if let slot = choosingFor { capturing = Capture(slot: slot, source: .camera) }
+                choosingFor = nil
             }
+            Button("Choose an existing photo") {
+                if let slot = choosingFor { capturing = Capture(slot: slot, source: .photoLibrary) }
+                choosingFor = nil
+            }
+            Button("Cancel", role: .cancel) { choosingFor = nil }
+        } message: {
+            Text("A photo taken here and now is what answers a damage claim. "
+               + "An existing one is recorded as chosen from the library.")
+        }
+        .sheet(item: $capturing) { capture in
+            CameraPicker(
+                source: capture.source,
+                onImage: { image in
+                    Task {
+                        await store.upload(jobID: jobID, type: capture.slot, image: image,
+                                           source: capture.source == .camera ? "camera" : "library")
+                    }
+                },
+                onFinish: { capturing = nil }
+            )
+            .ignoresSafeArea()
         }
         .sheet(item: $viewing) { photo in
             PhotoViewer(photo: photo)
@@ -246,6 +278,17 @@ private struct PhotoViewer: View {
                     Text(TowDate.short(photo.takenAt))
                         .font(.system(size: 12))
                         .foregroundStyle(.white.opacity(0.6))
+                    if photo.isFromLibrary {
+                        // Said here so nobody reads the timestamp above as the
+                        // moment the picture was taken. It is the moment it was
+                        // attached to the job, which for a library pick is a
+                        // different thing entirely.
+                        Label("Chosen from the library, not taken at the job",
+                              systemImage: "photo.on.rectangle")
+                            .font(.system(size: 11))
+                            .foregroundStyle(Theme.amber)
+                            .padding(.top, 4)
+                    }
                 }
 
                 Button("Close") { dismiss() }

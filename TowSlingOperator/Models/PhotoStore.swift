@@ -49,7 +49,8 @@ final class PhotoStore: ObservableObject {
     /// in an underground car park — exactly where the awkward jobs are — cannot
     /// record anything at all, and no evidence is far worse than evidence with
     /// one field missing. The server stamps the IP and the time regardless.
-    func upload(jobID: Int, type: String, image: UIImage) async {
+    func upload(jobID: Int, type: String, image: UIImage,
+                source: String = "camera") async {
         guard let data = image.jobPhotoData() else {
             errorMessage = "That photo could not be prepared for sending."
             return
@@ -58,7 +59,11 @@ final class PhotoStore: ObservableObject {
         uploading = type
         defer { uploading = nil }
 
-        var fields = ["call_id": String(jobID), "photo_type": type]
+        // Camera or library, recorded rather than assumed. A photo chosen from
+        // the library carries no promise about when or where it was taken, and
+        // a record that cannot tell the two apart is worth less than one that
+        // admits which it has.
+        var fields = ["call_id": String(jobID), "photo_type": type, "source": source]
         if let fix = await location.current() {
             fields["lat"] = String(fix.coordinate.latitude)
             fields["lng"] = String(fix.coordinate.longitude)

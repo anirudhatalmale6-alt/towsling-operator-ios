@@ -76,6 +76,29 @@ struct SignedInView: View {
             default:          break
             }
         }
+        // A push landing means something changed on the server RIGHT NOW.
+        // Waiting out the rest of the poll interval would show a driver a
+        // banner about a job that is not on his board yet.
+        .onReceive(NotificationCenter.default.publisher(for: PushNotifications.arrived)) { _ in
+            // Explicitly @MainActor. BoardStore is main-actor isolated and the
+            // closure onReceive hands us is not, so an unannotated Task would
+            // be reading its state from the wrong context.
+            Task { @MainActor in await board.refresh() }
+        }
+        // Tapped. Put him on the screen the job is actually on: a job he has
+        // been awarded lives under My jobs, anything else is still on the board
+        // waiting to be taken.
+        .onReceive(NotificationCenter.default.publisher(for: PushNotifications.openJob)) { note in
+            let callID = note.userInfo?["call_id"] as? Int
+            Task { @MainActor in
+                await board.refresh()
+                if let callID, board.myJobs.contains(where: { $0.id == callID }) {
+                    tab = .mine
+                } else {
+                    tab = .board
+                }
+            }
+        }
     }
 }
 
