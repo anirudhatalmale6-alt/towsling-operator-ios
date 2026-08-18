@@ -15,6 +15,20 @@ final class PhotoStore: ObservableObject {
 
     private let location = OneShotLocation()
 
+    /// The envelope. /calls/detail replies
+    /// `{"success":true,"call":{…,"photo_state":{…}}}` — everything is nested
+    /// under "call", unlike /calls/board and /calls/my-calls which put their
+    /// list at the top level.
+    ///
+    /// Reading photo_state from the top level here decoded PERFECTLY and gave
+    /// nil, because both fields are optional: no error, no message, just a
+    /// photo screen with nothing on it and no way in. Optionals turn a
+    /// wrong-shaped response into a successful decode of nothing, which is a
+    /// far worse failure than a thrown error would have been.
+    private struct Response: Decodable {
+        let call: Detail?
+    }
+
     private struct Detail: Decodable {
         let photoState: PhotoState?
         let photos: [Photo]?
@@ -29,11 +43,20 @@ final class PhotoStore: ObservableObject {
         isLoading = true
         defer { isLoading = false }
         do {
-            let d = try await API.shared.get("/calls/detail",
+            let r = try await API.shared.get("/calls/detail",
                                              query: ["id": String(jobID)],
-                                             as: Detail.self)
-            state = d.photoState
-            photos = d.photos ?? []
+                                             as: Response.self)
+            // Say so rather than showing an empty screen. If the checklist is
+            // ever missing again, the driver is told instead of being left
+            // looking at a blank page wondering where the camera went.
+            guard let checklist = r.call?.photoState else {
+                state = nil
+                photos = r.call?.photos ?? []
+                errorMessage = "Could not read the photo checklist for this job."
+                return
+            }
+            state = checklist
+            photos = r.call?.photos ?? []
             errorMessage = nil
         } catch let e as APIError {
             errorMessage = e.message

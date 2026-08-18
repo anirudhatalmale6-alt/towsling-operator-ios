@@ -41,6 +41,19 @@ def uid() -> str:
     return f"7A{_counter:022X}"
 
 
+# Loose files that belong in the bundle, listed rather than inferred.
+#
+# An allowlist and not a denylist, because the two files that must NEVER land
+# here are Info.plist and the .entitlements: both are referenced by build
+# SETTINGS (INFOPLIST_FILE, CODE_SIGN_ENTITLEMENTS), and copying them as
+# resources as well makes Xcode fail the build outright with "Multiple commands
+# produce .../Info.plist".
+#
+# Notification sounds have to be loose files in the bundle. An asset catalog
+# cannot hold them, and APNs names the sound by filename.
+RESOURCE_SUFFIXES = {".wav", ".caf", ".aiff", ".aif"}
+
+
 def collect():
     """Every source and resource, grouped by the folder it lives in."""
     sources, resources = [], []
@@ -56,6 +69,8 @@ def collect():
             continue
         if path.suffix == ".swift":
             sources.append(path)
+        elif path.suffix in RESOURCE_SUFFIXES:
+            resources.append(path)
     return sources, resources
 
 
@@ -125,6 +140,11 @@ def main():
             t = "sourcecode.swift"
         elif p.suffix == ".xcassets":
             t = "folder.assetcatalog"
+        elif p.suffix in RESOURCE_SUFFIXES:
+            # Marked as audio rather than left as "text". Xcode will copy it
+            # either way, but a sound listed as text is the sort of thing that
+            # gets "helpfully" transformed by a build setting later.
+            t = "audio.wav" if p.suffix == ".wav" else "audio.aiff"
         else:
             t = "text"
         add(f'\t\t{fref} /* {p.name} */ = {{isa = PBXFileReference; lastKnownFileType = {t}; path = "{p.name}"; sourceTree = "<group>"; }};')
@@ -228,7 +248,7 @@ def main():
     add("\t\t\tbuildActionMask = 2147483647;")
     add("\t\t\tfiles = (")
     for p, _, bfile in files:
-        if p.suffix == ".xcassets":
+        if p.suffix == ".xcassets" or p.suffix in RESOURCE_SUFFIXES:
             add(f"\t\t\t\t{bfile} /* {p.name} in Resources */,")
     add("\t\t\t);")
     add("\t\t\trunOnlyForDeploymentPostprocessing = 0;")
