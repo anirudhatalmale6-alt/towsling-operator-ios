@@ -162,30 +162,40 @@ struct MoreView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .cardBackground()
 
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Coming in the next builds")
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundStyle(Theme.inkDim)
-                        ForEach(["Alerts",
-                                 "My rates",
-                                 "Documents",
-                                 "Company, trucks and equipment",
-                                 "Taking-jobs switch",
-                                 "Push notifications",
-                                 "Live location while on a job"], id: \.self) { item in
-                            HStack(spacing: 8) {
-                                Image(systemName: "circle.dashed")
-                                    .font(.system(size: 12))
-                                    .foregroundStyle(Theme.inkFaint)
-                                Text(item)
-                                    .font(.system(size: 14))
-                                    .foregroundStyle(Theme.ink)
-                            }
+                    VStack(spacing: 0) {
+                        settingsLink("My company", "building.2.fill",
+                                     "Duty switch, trucks, what you can tow") {
+                            CompanyView()
                         }
-                        Text("Everything here already works on the website in the meantime.")
+                        Divider().overlay(Theme.line)
+                        settingsLink("Alerts", "bell.fill",
+                                     "Which jobs are worth waking you up for") {
+                            AlertsView()
+                        }
+                        Divider().overlay(Theme.line)
+                        settingsLink("My rates", "dollarsign.square.fill",
+                                     "What you charge, so we price your area right") {
+                            RatesView()
+                        }
+                        Divider().overlay(Theme.line)
+                        settingsLink("Documents", "doc.text.fill",
+                                     "Insurance, licence and registration") {
+                            DocumentsView()
+                        }
+                    }
+                    .cardBackground(padding: 0)
+
+                    // Still on the website only. Named rather than left as a
+                    // gap somebody has to go hunting for.
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Still on the website only")
+                            .font(.system(size: 12.5, weight: .bold))
+                            .foregroundStyle(Theme.inkDim)
+                        Text("Company address and equipment, team logins, and live location "
+                           + "while you are on a job.")
                             .font(.system(size: 12))
                             .foregroundStyle(Theme.inkFaint)
-                            .padding(.top, 2)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .cardBackground()
@@ -225,5 +235,42 @@ struct MoreView: View {
         .sheet(isPresented: $deleting) {
             DeleteAccountView().environmentObject(session)
         }
+    }
+
+    /// One row of the settings list. A subtitle on each, because "Alerts" and
+    /// "My rates" both sound like places nothing important happens, and both
+    /// are places an operator can accidentally switch off his own work.
+    @ViewBuilder
+    private func settingsLink<Destination: View>(
+        _ title: String, _ icon: String, _ subtitle: String,
+        @ViewBuilder destination: @escaping () -> Destination
+    ) -> some View {
+        NavigationLink {
+            destination()
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: icon)
+                    .font(.system(size: 15))
+                    .foregroundStyle(Theme.accent)
+                    .frame(width: 24)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Theme.ink)
+                    Text(subtitle)
+                        .font(.system(size: 11.5))
+                        .foregroundStyle(Theme.inkFaint)
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Theme.inkFaint)
+            }
+            .padding(.horizontal, 15)
+            .padding(.vertical, 13)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
