@@ -301,7 +301,8 @@ def main():
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = TowSling;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is shared with the customer only while you are working their job, so they can watch your truck arrive.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to offer you jobs near your truck rather than near your yard, and is shared with a customer only while you are working their job.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allowing this in the background keeps job alerts matched to where your truck actually is while the phone is in your pocket. We keep one approximate position, overwritten each time, never a trail of where you have been.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Photographing a vehicle before and after a tow is what protects you against a damage claim.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Only used to pick a job photo when the camera is not available, such as on a simulator.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

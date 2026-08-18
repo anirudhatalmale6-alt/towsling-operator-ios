@@ -10,6 +10,7 @@ import UIKit          // openSettingsURLString
 struct AlertsView: View {
     @StateObject private var store = AlertsStore()
     @ObservedObject private var push = PushRegistrar.shared
+    @ObservedObject private var location = LocationReporter.shared
 
     /// Local copies. The server is the truth, but a text field bound straight
     /// to the store would fire a save on every keystroke.
@@ -31,6 +32,7 @@ struct AlertsView: View {
                         permissionCard
                         masterSwitch(prefs)
                         if prefs.enabled {
+                            locationCard(prefs)
                             radiusCard(prefs)
                             payoutCard
                             quietCard(prefs)
@@ -143,12 +145,94 @@ struct AlertsView: View {
         .cardBackground()
     }
 
+    /// Measured from the truck, or from the yard.
+    ///
+    /// The switch is per phone, not per company. A driver out on the road wants
+    /// jobs near HIM; an owner whose phone lives on the kitchen table forty
+    /// miles away does not, and one setting for the whole company cannot serve
+    /// both.
+    private func locationCard(_ prefs: AlertPrefs) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Toggle(isOn: Binding(
+                get: { location.useDeviceLocation },
+                set: { location.setUseDeviceLocation($0) }
+            )) {
+                Text("Use this phone's location")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(Theme.ink)
+            }
+            .tint(Theme.accent)
+
+            Text(location.useDeviceLocation
+                 ? "Jobs are measured from where this phone is, so a driver out on the "
+                 + "road is offered what is near him rather than what is near the yard."
+                 : "Jobs are measured from your yard address, wherever this phone happens to be.")
+                .font(.system(size: 12))
+                .foregroundStyle(Theme.inkFaint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if location.useDeviceLocation {
+                // The promise that makes this safe to leave on. Without it, an
+                // app that gets killed or a phone with no signal simply stops
+                // being told about work, and that looks exactly like a quiet night.
+                Text("If this phone has not reported in a while — app closed, no signal, "
+                   + "location turned off — we fall back to your yard. You never stop "
+                   + "getting alerts because of this setting.")
+                    .font(.system(size: 11.5))
+                    .foregroundStyle(Theme.inkFaint)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                switch location.authorization {
+                case .notDetermined:
+                    Button("Allow location") { location.requestPermission() }
+                        .font(.system(size: 13.5, weight: .semibold))
+                        .foregroundStyle(Theme.accent)
+                case .denied, .restricted:
+                    Text("Location is switched off for TowSling, so we are using your yard. "
+                       + "Turn it on in the iPhone Settings app.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(Theme.amber)
+                        .fixedSize(horizontal: false, vertical: true)
+                case .authorizedWhenInUse:
+                    // Worth saying: While Using looks like it works, right up
+                    // until the phone is in a pocket, which is most of the day.
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Set to \"While Using the App\", so your position only updates "
+                           + "while the app is open. Allow \"Always\" and it keeps up while "
+                           + "the phone is in your pocket.")
+                            .font(.system(size: 12))
+                            .foregroundStyle(Theme.amber)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Button("Allow always") { location.requestPermission() }
+                            .font(.system(size: 13.5, weight: .semibold))
+                            .foregroundStyle(Theme.accent)
+                    }
+                default:
+                    if let sent = location.lastSentAt {
+                        Text("Last updated \(sent.formatted(date: .omitted, time: .shortened)).")
+                            .font(.system(size: 11.5))
+                            .foregroundStyle(Theme.inkFaint)
+                    }
+                }
+            } else if !prefs.baseSet {
+                Text("You have no yard address either, so you will not be alerted at all "
+                   + "until one of the two is set.")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Theme.red)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardBackground()
+    }
+
     private func radiusCard(_ prefs: AlertPrefs) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("How far out")
                 .font(.system(size: 15, weight: .bold))
                 .foregroundStyle(Theme.ink)
-            Text("Leave this blank to follow your service radius of \(prefs.serviceRadius) miles — "
+            Text("Measured from \(location.useDeviceLocation ? "this phone" : "your yard"). "
+               + "Leave blank to follow your service radius of \(prefs.serviceRadius) miles — "
                + "one number to keep right instead of two.")
                 .font(.system(size: 12))
                 .foregroundStyle(Theme.inkFaint)

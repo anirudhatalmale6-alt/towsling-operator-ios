@@ -10,6 +10,7 @@ struct CompanyView: View {
     @StateObject private var store = CompanyStore()
     @State private var editing: Truck?
     @State private var addingTruck = false
+    @State private var editingCompany = false
 
     var body: some View {
         ZStack {
@@ -55,6 +56,13 @@ struct CompanyView: View {
                 Task { await store.saveTruck(updated, isNew: false) }
             } onDelete: {
                 Task { await store.deleteTruck(truck) }
+            }
+        }
+        .sheet(isPresented: $editingCompany) {
+            if let company = store.company {
+                CompanyEditor(company: company) { body, note in
+                    Task { await store.saveProfile(body, note: note) }
+                }
             }
         }
         .sheet(isPresented: $addingTruck) {
@@ -169,11 +177,9 @@ struct CompanyView: View {
                     .padding(.top, 2)
             }
 
-            Text("Company details and equipment are edited on the website — they change "
-               + "what work you are sent, so they go through the same checks either way.")
-                .font(.system(size: 11.5))
-                .foregroundStyle(Theme.inkFaint)
-                .fixedSize(horizontal: false, vertical: true)
+            Button("Edit company details") { editingCompany = true }
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(Theme.accent)
                 .padding(.top, 4)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

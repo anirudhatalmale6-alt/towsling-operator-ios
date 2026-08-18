@@ -97,9 +97,14 @@ struct TowSlingOperatorApp: App {
                 .onChange(of: session.isSignedIn) { signedIn in
                     if signedIn {
                         PushRegistrar.shared.signedIn()
+                        LocationReporter.shared.signedIn(deviceToken: nil)
                         Task { await PushRegistrar.shared.requestIfNeeded() }
                     } else {
                         PushRegistrar.shared.signedOut()
+                        // Stops reporting the moment somebody signs out. A phone
+                        // that keeps sending positions for an account it is no
+                        // longer signed into is indefensible.
+                        LocationReporter.shared.signedOut()
                     }
                 }
         }

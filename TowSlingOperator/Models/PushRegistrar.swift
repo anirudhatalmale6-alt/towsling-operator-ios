@@ -84,6 +84,9 @@ final class PushRegistrar: NSObject, ObservableObject {
             ])
             pendingToken = nil
             lastError = nil
+            // The APNs token is what identifies this device row, so location
+            // reporting cannot start until it exists.
+            LocationReporter.shared.tokenArrived(token)
         } catch {
             // Kept, so the next sign-in or foreground retries it.
             lastError = (error as? APIError)?.message ?? "Could not register for alerts."

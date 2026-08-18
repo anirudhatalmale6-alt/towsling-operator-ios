@@ -71,7 +71,11 @@ struct SignedInView: View {
             // way down and fires a request the instant we come back that the
             // refresh below would repeat.
             switch phase {
-            case .active:     board.start()
+            case .active:
+                board.start()
+                // One fix when the app comes to the front. For a driver who
+                // only granted "While Using", this is the whole feature.
+                LocationReporter.shared.refresh()
             case .background: board.stop()
             default:          break
             }
@@ -191,8 +195,8 @@ struct MoreView: View {
                         Text("Still on the website only")
                             .font(.system(size: 12.5, weight: .bold))
                             .foregroundStyle(Theme.inkDim)
-                        Text("Company address and equipment, team logins, and live location "
-                           + "while you are on a job.")
+                        Text("Extra logins for your staff, and the map point your yard address "
+                           + "is looked up to.")
                             .font(.system(size: 12))
                             .foregroundStyle(Theme.inkFaint)
                             .fixedSize(horizontal: false, vertical: true)

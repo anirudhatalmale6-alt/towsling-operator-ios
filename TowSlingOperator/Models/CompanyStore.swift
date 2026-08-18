@@ -76,20 +76,24 @@ struct Company: Decodable, Equatable {
     var baseSet: Bool { baseLat != nil && baseLng != nil }
 
     /// In the order an operator thinks about them: what size, then what kind.
-    var capabilities: [(label: String, on: Bool)] {
-        [("Light duty",     (hasLightDuty ?? 0) == 1),
-         ("Medium duty",    (hasMediumDuty ?? 0) == 1),
-         ("Heavy duty",     (hasHeavyDuty ?? 0) == 1),
-         ("Flatbed",        (hasFlatbed ?? 0) == 1),
-         ("Wheel lift",     (hasWheelLift ?? 0) == 1),
-         ("Winch recovery", (hasWinchRecovery ?? 0) == 1),
-         ("Lockout",        (hasLockout ?? 0) == 1),
-         ("Jump start",     (hasJumpstart ?? 0) == 1),
-         ("Tyre change",    (hasTireChange ?? 0) == 1),
-         ("Fuel delivery",  (hasFuelDelivery ?? 0) == 1),
-         ("Motorcycle",     (hasMotorcycle ?? 0) == 1),
-         ("EV certified",   (hasEVCertified ?? 0) == 1),
-         ("Low clearance",  (hasLowClearance ?? 0) == 1)]
+    ///
+    /// The API key travels with the label so the editor can post back exactly
+    /// the column names /auth/update-profile expects. A second hand-typed list
+    /// of those keys is how a checkbox silently stops saving.
+    var capabilities: [(key: String, label: String, on: Bool)] {
+        [("has_light_duty",     "Light duty",     (hasLightDuty ?? 0) == 1),
+         ("has_medium_duty",    "Medium duty",    (hasMediumDuty ?? 0) == 1),
+         ("has_heavy_duty",     "Heavy duty",     (hasHeavyDuty ?? 0) == 1),
+         ("has_flatbed",        "Flatbed",        (hasFlatbed ?? 0) == 1),
+         ("has_wheel_lift",     "Wheel lift",     (hasWheelLift ?? 0) == 1),
+         ("has_winch_recovery", "Winch recovery", (hasWinchRecovery ?? 0) == 1),
+         ("has_lockout",        "Lockout",        (hasLockout ?? 0) == 1),
+         ("has_jumpstart",      "Jump start",     (hasJumpstart ?? 0) == 1),
+         ("has_tire_change",    "Tyre change",    (hasTireChange ?? 0) == 1),
+         ("has_fuel_delivery",  "Fuel delivery",  (hasFuelDelivery ?? 0) == 1),
+         ("has_motorcycle",     "Motorcycle",     (hasMotorcycle ?? 0) == 1),
+         ("has_ev_certified",   "EV certified",   (hasEVCertified ?? 0) == 1),
+         ("has_lowclearance",   "Low clearance",  (hasLowClearance ?? 0) == 1)]
     }
 }
 
@@ -216,6 +220,32 @@ final class CompanyStore: ObservableObject {
         } catch {
             errorMessage = "Could not change your duty status."
             availableLocal = company?.isAvailable ?? true
+        }
+    }
+
+    /// Company details and the capability flags.
+    ///
+    /// Both go through /auth/update-profile, which already owns those columns.
+    /// A second endpoint writing the same rows would give two pieces of code
+    /// permission to disagree about what this company can tow — and that answer
+    /// decides which jobs reach it at all.
+    ///
+    /// Only the keys given are sent; the endpoint reads each with
+    /// array_key_exists, so a screen that has not loaded cannot blank a field.
+    func saveProfile(_ body: [String: Any], note: String) async {
+        isSaving = true
+        defer { isSaving = false }
+        do {
+            try await API.shared.postIgnoringResult("/auth/update-profile", body: body)
+            savedNote = note
+            errorMessage = nil
+            await load()
+        } catch let e as APIError {
+            errorMessage = e.message
+            await load()            // put the screen back to what is stored
+        } catch {
+            errorMessage = "Could not save that."
+            await load()
         }
     }
 
