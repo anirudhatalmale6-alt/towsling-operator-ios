@@ -36,6 +36,15 @@ struct AddressField: View {
     /// the address just chosen.
     @State private var justPicked = false
     @State private var searchTask: Task<Void, Never>?
+    /// Whether the operator is actually typing in here.
+    ///
+    /// Without this the screen suggested against its OWN prefill: opening the
+    /// editor sets `text` to the stored address, that fires onChange, and two
+    /// suggestions appeared under a field nobody had touched. It also spent a
+    /// billable Places call every single time the screen was opened.
+    @FocusState private var focused: Bool
+    /// Cancels the delayed hide when focus comes straight back.
+    @State private var blurTask: Task<Void, Never>?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -43,6 +52,7 @@ struct AddressField: View {
                 TextField("Street address", text: $text)
                     .textContentType(.fullStreetAddress)
                     .autocorrectionDisabled()
+                    .focused($focused)
                     .font(.system(size: 16))
                     .foregroundStyle(Theme.ink)
                 if searching || resolving {
@@ -56,7 +66,24 @@ struct AddressField: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .onChange(of: text) { value in
                 if justPicked { justPicked = false; return }
+                // Only while the operator is actually in the field. A prefill
+                // is not a search.
+                guard focused else { suggestions = []; return }
                 scheduleSearch(value)
+            }
+            .onChange(of: focused) { isFocused in
+                blurTask?.cancel()
+                if isFocused { return }
+                // Hidden on a delay, not immediately. Tapping a suggestion
+                // resigns the keyboard first, so clearing the list the instant
+                // focus is lost removes the row out from under the finger and
+                // the tap lands on nothing.
+                // Explicitly @MainActor: an onChange closure is not isolated,
+                // and this touches view state.
+                blurTask = Task { @MainActor in
+                    try? await Task.sleep(nanoseconds: 300_000_000)
+                    if !Task.isCancelled && !focused { suggestions = [] }
+                }
             }
 
             if !suggestions.isEmpty {
@@ -130,8 +157,10 @@ struct AddressField: View {
 
     private func pick(_ s: String) {
         justPicked = true
+        searchTask?.cancel()
         text = s
         suggestions = []
+        focused = false
         resolving = true
         errorMessage = nil
 
