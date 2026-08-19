@@ -150,27 +150,13 @@ struct ReviewsView: View {
         if let s = r.serviceType, !s.isEmpty {
             bits.append(s.replacingOccurrences(of: "_", with: " ").capitalized)
         }
-        if let d = r.createdAt, let parsed = ReviewsView.parse(d) {
-            bits.append(ReviewsView.monthYear.string(from: parsed))
-        }
+        // One shared parser for the whole app. This screen used to guess UTC
+        // while the Money screen guessed the phone's zone, so the same instant
+        // printed two different answers and neither matched the server.
+        let when = TowDate.monthYear(r.createdAt)
+        if !when.isEmpty { bits.append(when) }
         return bits.joined(separator: " · ")
     }
-
-    private static let parser: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        // The server writes MySQL DATETIME in its own zone with no offset. Read
-        // it as UTC rather than as the phone's zone, or a review left late in
-        // the evening shows up under the wrong month.
-        f.timeZone = TimeZone(identifier: "UTC")
-        return f
-    }()
-    private static let monthYear: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "MMMM yyyy"
-        return f
-    }()
-    private static func parse(_ s: String) -> Date? { parser.date(from: s) }
 }
 
 /// Filled, half and empty stars from one Double.

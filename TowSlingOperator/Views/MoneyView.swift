@@ -252,29 +252,67 @@ struct MoneyView: View {
     }
 }
 
-/// The API sends MySQL datetimes ("2026-08-17 14:31:02"). Parsed once, here,
-/// rather than in each view that wants to print one.
+/// Every timestamp the app prints goes through here.
+///
+/// The API sends ISO-8601 with a real offset ("2026-08-17T14:31:02-07:00").
+/// That matters: the server runs on Pacific time, so the old parser — which
+/// read a bare "2026-08-17 14:31:02" as the *phone's* zone — showed a driver
+/// in Florida every time three hours behind his own watch. With the offset
+/// present, the instant is unambiguous and the display formatter renders it
+/// wherever the driver happens to be standing.
+///
+/// The legacy shape is still accepted so a phone running this build against
+/// an older server, or any single field that slips through bare, degrades to
+/// the previous behaviour instead of showing a dash.
 enum TowDate {
-    private static let parser: DateFormatter = {
+    private static let iso: ISO8601DateFormatter = {
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime]
+        return f
+    }()
+
+    private static let isoFractional: ISO8601DateFormatter = {
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return f
+    }()
+
+    /// Bare MySQL DATETIME, read in the zone the server writes in.
+    private static let legacy: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "yyyy-MM-dd HH:mm:ss"
         f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = TimeZone(identifier: "America/Los_Angeles")
         return f
     }()
 
     private static let display: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "d MMM, HH:mm"
+        f.timeZone = TimeZone.current       // the reader's clock, not the server's
+        return f
+    }()
+
+    private static let monthYearFmt: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "MMMM yyyy"
+        f.timeZone = TimeZone.current
         return f
     }()
 
     static func date(_ raw: String?) -> Date? {
         guard let raw, !raw.isEmpty else { return nil }
-        return parser.date(from: raw)
+        return iso.date(from: raw) ?? isoFractional.date(from: raw) ?? legacy.date(from: raw)
     }
 
     static func short(_ raw: String?) -> String {
         guard let d = date(raw) else { return "—" }
         return display.string(from: d)
+    }
+
+    /// Month and year only — used where a precise time would identify a person.
+    static func monthYear(_ raw: String?) -> String {
+        guard let d = date(raw) else { return "" }
+        return monthYearFmt.string(from: d)
     }
 }
