@@ -188,7 +188,10 @@ struct AcceptSheet: View {
                         Button {
                             eta = minutes
                         } label: {
-                            Text("\(minutes) min")
+                            // "1 hr", not "60 min" — it is how a dispatcher
+                            // says it, and it makes the longest option read as
+                            // a real choice rather than the end of a list.
+                            Text(minutes == 60 ? "1 hr" : "\(minutes) min")
                                 .font(.system(size: 15, weight: .bold))
                                 .foregroundStyle(eta == minutes ? Theme.accent : Theme.ink)
                                 .frame(maxWidth: .infinity)
@@ -204,10 +207,25 @@ struct AcceptSheet: View {
                     }
                 }
 
-                Text("The customer sees this counting down. Be honest — it is what they judge you on.")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Theme.inkFaint)
+                // The consequence, next to the number that causes it. This used
+                // to say the customer judges you on it, which was true and
+                // toothless — the ETA had no effect on anything. It does now:
+                // past it they can walk away and you get nothing, so quoting 10
+                // to win a job you cannot reach in 40 costs the whole fee.
+                Text("Specify honest ETA times. Your customer is allowed to "
+                   + "CANCEL the call after your ETA has passed, and a GOA will "
+                   + "not be charged.")
+                    .font(.system(size: 12.5))
+                    .foregroundStyle(Theme.amber)
                     .fixedSize(horizontal: false, vertical: true)
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Theme.amber.opacity(0.10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Theme.amber.opacity(0.30), lineWidth: 1)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
 
                 Spacer(minLength: 0)
 

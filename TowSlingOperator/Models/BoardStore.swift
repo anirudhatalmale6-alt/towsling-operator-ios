@@ -127,6 +127,38 @@ final class BoardStore: ObservableObject {
         }
     }
 
+    /// Hand an accepted job back to the board.
+    ///
+    /// The way out of a job this company can no longer run — a truck that will
+    /// not start, an address that turns out to be a vehicle it cannot lift.
+    /// Before this the only alternatives were driving a truck that could not go
+    /// and leaving a stranded customer watching a countdown for nothing.
+    ///
+    /// Returns the server's own sentence on success, because it carries the
+    /// count: hand back too many in a month and the account gets reviewed, and
+    /// the operator should hear that from the button he just pressed.
+    func release(_ job: Job, reason: String?) async -> (ok: Bool, message: String) {
+        struct ReleaseResponse: Decodable {
+            let message: String?
+        }
+        do {
+            let trimmed = reason?.trimmingCharacters(in: .whitespacesAndNewlines)
+            var body: [String: Any] = ["call_id": job.id]
+            // Sent only when there is something to send. An empty string stored
+            // as the reason is worse than NULL — it reads as "he gave a reason"
+            // in every report that checks for one.
+            if let trimmed, !trimmed.isEmpty { body["reason"] = trimmed }
+
+            let r = try await API.shared.post("/calls/release", body: body, as: ReleaseResponse.self)
+            await refresh()
+            return (true, r.message ?? "Job handed back.")
+        } catch let e as APIError {
+            return (false, e.message)
+        } catch {
+            return (false, "Could not hand the job back.")
+        }
+    }
+
     /// Finish the job. A separate endpoint from setStatus, not a fourth status:
     /// completing is what charges the customer's card and creates the payout,
     /// so it goes through its own handler rather than sharing one with "I am on

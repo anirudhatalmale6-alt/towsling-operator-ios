@@ -11,6 +11,10 @@ struct MyJobsView: View {
     @State private var completion: BoardStore.CompletionResult?
     /// Set when Complete is pressed on a job still missing photographs.
     @State private var confirmingIncomplete: Job?
+    /// The job being handed back, while the sheet asking why is up.
+    @State private var releasing: Job?
+    /// The server's sentence after a successful release — it carries the count.
+    @State private var releaseNote: String?
 
     var body: some View {
         ZStack {
@@ -40,7 +44,8 @@ struct MyJobsView: View {
                                 job: job,
                                 busy: busyJobID == job.id,
                                 onStatus: { status in advance(job, to: status) },
-                                onComplete: { finish(job) }
+                                onComplete: { finish(job) },
+                                onRelease: { releasing = job }
                             )
                         }
                     }
@@ -78,6 +83,22 @@ struct MyJobsView: View {
                + "\n\nWithout them a damage claim on this vehicle is your word "
                + "against the customer's.")
         }
+        // A sheet, not an alert. The operator has to type a reason, and an
+        // alert with a text field on iOS is a cramped box he cannot see the
+        // consequences in — and the consequences are the point: the customer
+        // is told, the job goes back on the board, and he cannot take it again.
+        .sheet(item: $releasing) { job in
+            ReleaseSheet(job: job) { reason in
+                let r = await board.release(job, reason: reason)
+                if r.ok { releaseNote = r.message } else { actionError = r.message }
+                return r.ok
+            }
+        }
+        .alert("Job handed back",
+               isPresented: Binding(get: { releaseNote != nil },
+                                    set: { if !$0 { releaseNote = nil } })) {
+            Button("OK", role: .cancel) { releaseNote = nil }
+        } message: { Text(releaseNote ?? "") }
         .alert("Job completed",
                isPresented: Binding(get: { completion != nil },
                                     set: { if !$0 { completion = nil } })) {
@@ -130,6 +151,7 @@ private struct LiveJobCard: View {
     let busy: Bool
     let onStatus: (String) -> Void
     let onComplete: () -> Void
+    let onRelease: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -192,7 +214,30 @@ private struct LiveJobCard: View {
                 .disabled(busy)
                 .padding(.top, 10)
             }
+
+            // Deliberately small, plain and last. This is for a truck that
+            // will not start, not something to catch a thumb reaching for
+            // "I have arrived" — so it does not look like the other buttons
+            // and it is nowhere near them.
+            //
+            // Gone once the vehicle is loaded: there is nothing to hand back
+            // at that point, the car is already on the truck.
+            if canRelease {
+                Button(action: onRelease) {
+                    Text("I cannot go — hand this job back")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Theme.inkDim)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 40)
+                }
+                .disabled(busy)
+                .padding(.top, 2)
+            }
         }
+    }
+
+    private var canRelease: Bool {
+        ["awarded", "en_route", "on_scene"].contains(job.status)
     }
 
     private var photoComplete: Bool { job.photoState?.complete == true }
@@ -242,5 +287,106 @@ private struct LiveJobCard: View {
         if let apple = URL(string: "http://maps.apple.com/?daddr=\(q)") {
             UIApplication.shared.open(apple)
         }
+    }
+}
+
+/// Why this company can no longer go, and what happens when it says so.
+///
+/// The reason is for the record, not for the customer: "wrong address, my
+/// mistake" read by a stranded motorist is an argument, not information. What
+/// they see is that a company cancelled and another is being found.
+private struct ReleaseSheet: View {
+    let job: Job
+    /// Returns true when the job was handed back, so the sheet knows to close.
+    let onRelease: (String?) async -> Bool
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var reason = ""
+    @State private var working = false
+
+    var body: some View {
+        ZStack {
+            Theme.bg.ignoresSafeArea()
+
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Hand this job back")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundStyle(Theme.ink)
+
+                Text("\(job.callNumber) · \(job.whereFrom)")
+                    .font(.system(size: 14))
+                    .foregroundStyle(Theme.inkDim)
+
+                // Said before he types, not after he taps. All three of these
+                // are things an operator would otherwise find out afterwards,
+                // and the third is the one that makes this a real decision.
+                VStack(alignment: .leading, spacing: 7) {
+                    bullet("The job goes straight back on the board and other companies nearby are alerted.")
+                    bullet("Your customer is told a company cancelled, and that we are finding another driver.")
+                    bullet("You will not be able to take this job again.")
+                }
+                .padding(13)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Theme.amber.opacity(0.10))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Theme.amber.opacity(0.30), lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                Text("What happened? Your customer does not see this.")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Theme.inkDim)
+
+                TextField("Truck broke down", text: $reason)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 15))
+                    .foregroundStyle(Theme.ink)
+                    .padding(.horizontal, 13)
+                    .frame(height: 48)
+                    .background(Theme.panel)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10).stroke(Theme.line, lineWidth: 1)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .submitLabel(.done)
+
+                Spacer(minLength: 0)
+
+                Button {
+                    working = true
+                    Task {
+                        // Closed either way — the outcome, success or failure,
+                        // is shown by the screen behind this, and leaving the
+                        // sheet up over an error invites a second press of a
+                        // button whose first press may already have worked.
+                        _ = await onRelease(reason)
+                        working = false
+                        dismiss()
+                    }
+                } label: {
+                    if working { ProgressView().tint(.white) }
+                    else { Text("Hand the job back") }
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(working)
+
+                Button("Keep the job") { dismiss() }
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Theme.inkDim)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 40)
+                    .disabled(working)
+            }
+            .padding(20)
+        }
+    }
+
+    private func bullet(_ text: String) -> some View {
+        HStack(alignment: .top, spacing: 7) {
+            Text("•").font(.system(size: 13, weight: .bold))
+            Text(text).font(.system(size: 12.5)).fixedSize(horizontal: false, vertical: true)
+        }
+        .foregroundStyle(Theme.amber)
     }
 }
