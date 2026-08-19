@@ -111,9 +111,16 @@ struct JobCard: View {
                     Text("\(job.distanceMiles, specifier: "%.1f")")
                         .font(.system(size: 15, weight: .bold))
                         .foregroundStyle(Theme.ink)
-                    Text("miles away")
+                    // Say WHICH position this was measured from. "0.2 miles
+                    // away" is a different job when it is 0.2 from the truck
+                    // he is sitting in than 0.2 from a yard he is two hours
+                    // from, and he is about to promise the customer an ETA.
+                    Text(job.distanceFrom == "truck" ? "miles from you"
+                       : job.distanceFrom == "yard"  ? "miles from your yard"
+                       : "miles away")
                         .font(.system(size: 11))
                         .foregroundStyle(Theme.inkFaint)
+                        .multilineTextAlignment(.center)
                 }
                 .fixedSize()
 

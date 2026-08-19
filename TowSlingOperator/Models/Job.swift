@@ -25,6 +25,10 @@ struct Job: Identifiable, Decodable, Equatable {
     let dropoffAddress: String?         // only once awarded
     let towMiles: Double?
     @Flexible var distanceMiles: Double
+    /// Which of the company's two positions that distance was measured from:
+    /// "truck", "yard" or "map". Optional so an older server that does not send
+    /// it still decodes — the label just falls back to a plain "miles away".
+    let distanceFrom: String?
 
     // What
     let vehicle: String?
@@ -83,6 +87,7 @@ struct Job: Identifiable, Decodable, Equatable {
         case dropoffAddress = "dropoff_address"
         case towMiles = "tow_miles"
         case distanceMiles = "distance_miles"
+        case distanceFrom = "distance_from"
         case vehicle
         case vehicleColor = "vehicle_color"
         case problem
