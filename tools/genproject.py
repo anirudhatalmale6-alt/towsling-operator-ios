@@ -53,6 +53,16 @@ def uid() -> str:
 # cannot hold them, and APNs names the sound by filename.
 RESOURCE_SUFFIXES = {".wav", ".caf", ".aiff", ".aif"}
 
+# INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO is emitted with the other
+# Info.plist keys below. Without it App Store Connect asks, by hand, on every
+# single upload whether the app uses non-exempt encryption. It does not: the
+# only cryptography here is standard HTTPS and the Keychain, both of which are
+# exempt, so the answer can be stated once in the build rather than re-typed.
+#
+# NOTE the settings below are emitted into an OpenStep plist, not source. They
+# go in as plain ASCII with no // comments -- reasoning lives here, in the
+# Python, for exactly this reason.
+
 
 def collect():
     """Every source and resource, grouped by the folder it lives in."""
@@ -301,6 +311,7 @@ def main():
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = TowSling;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to offer you jobs near your truck rather than near your yard, and is shared with a customer only while you are working their job.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allowing this in the background keeps job alerts matched to where your truck actually is while the phone is in your pocket. We keep one approximate position, overwritten each time, never a trail of where you have been.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Photographing a vehicle before and after a tow is what protects you against a damage claim.";
