@@ -141,7 +141,11 @@ struct DocumentsView: View {
     // MARK: - Cards
 
     private var statusCard: some View {
-        let status = store.verificationStatus ?? "unverified"
+        // The DOCUMENTS decide this banner, not the account's verification
+        // status. Both a brand-new company and one that has just uploaded its
+        // last file are 'pending' on the account, so trusting that told a
+        // company with four empty slots that nothing more was needed from it.
+        let status = store.docsState ?? store.verificationStatus ?? "missing"
         return VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
                 Image(systemName: statusIcon(status))
@@ -276,6 +280,7 @@ struct DocumentsView: View {
         case "approved": return "Approved"
         case "pending":  return "With us for review"
         case "rejected": return "Something needs redoing"
+        case "expired":  return "A certificate has lapsed"
         default:         return "Not submitted yet"
         }
     }
@@ -290,6 +295,9 @@ struct DocumentsView: View {
         case "rejected":
             return "Upload a replacement for whatever is flagged below and it goes "
                  + "straight back into the queue."
+        case "expired":
+            return "An approved certificate has passed its expiry date. Dispatch stops "
+                 + "until a current one is uploaded."
         default:
             return "Upload these four and your company goes into the review queue "
                  + "automatically. You do not have to tell anybody."
@@ -301,6 +309,7 @@ struct DocumentsView: View {
         case "approved": return "checkmark.seal.fill"
         case "pending":  return "clock.fill"
         case "rejected": return "exclamationmark.triangle.fill"
+        case "expired":  return "clock.badge.exclamationmark.fill"
         default:         return "tray.and.arrow.up.fill"
         }
     }
@@ -310,6 +319,7 @@ struct DocumentsView: View {
         case "approved": return Theme.green
         case "pending":  return Theme.accent
         case "rejected": return Theme.amber
+        case "expired":  return Theme.red
         default:         return Theme.inkFaint
         }
     }

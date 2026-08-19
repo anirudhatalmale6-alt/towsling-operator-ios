@@ -51,6 +51,14 @@ final class DocsStore: ObservableObject {
     @Published private(set) var checklist: [DocChecklistItem] = []
     @Published private(set) var documents: [ComplianceDoc] = []
     @Published private(set) var verificationStatus: String?
+    /// What the DOCUMENTS say, from the server's own docsState():
+    /// missing | rejected | expired | pending | approved.
+    ///
+    /// Not the same question as verificationStatus. A brand-new tower account
+    /// is created 'pending', and so is one that has just uploaded its last
+    /// document — so keying the banner off the account status told a company
+    /// with nothing uploaded that nothing more was needed from it.
+    @Published private(set) var docsState: String?
     @Published private(set) var rejectionReason: String?
     @Published private(set) var isLoading = false
     @Published private(set) var uploading: String?
@@ -61,10 +69,12 @@ final class DocsStore: ObservableObject {
         let checklist: [DocChecklistItem]?
         let documents: [ComplianceDoc]?
         let verificationStatus: String?
+        let docsState: String?
         let rejectionReason: String?
         enum CodingKeys: String, CodingKey {
             case checklist, documents
             case verificationStatus = "verification_status"
+            case docsState          = "docs_state"
             case rejectionReason    = "rejection_reason"
         }
     }
@@ -77,6 +87,7 @@ final class DocsStore: ObservableObject {
             checklist = r.checklist ?? []
             documents = r.documents ?? []
             verificationStatus = r.verificationStatus
+            docsState = r.docsState
             rejectionReason = r.rejectionReason
             errorMessage = nil
         } catch let e as APIError {
