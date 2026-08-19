@@ -60,12 +60,12 @@ struct MoneyView: View {
                                     set: { if !$0 { actionError = nil } })) {
             Button("OK", role: .cancel) { actionError = nil }
         } message: { Text(actionError ?? "") }
-        .alert("On its way",
+        .alert(store.lastWithdrawal?.title ?? "On its way",
                isPresented: Binding(get: { store.lastWithdrawal != nil },
                                     set: { if !$0 { store.lastWithdrawal = nil } })) {
             Button("OK", role: .cancel) { store.lastWithdrawal = nil }
         } message: {
-            Text("\(store.lastWithdrawal ?? "") is on its way to your bank.")
+            Text(store.lastWithdrawal?.body ?? "")
         }
     }
 

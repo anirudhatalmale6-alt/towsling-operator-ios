@@ -103,8 +103,9 @@ final class MoneyStore: ObservableObject {
     @Published var errorMessage: String?
     @Published var sessionExpired = false
 
-    /// Set after a successful withdrawal so the screen can say what happened.
-    @Published var lastWithdrawal: String?
+    /// Set after a withdrawal so the screen can say what happened — including
+    /// the case where only part of it went.
+    @Published var lastWithdrawal: WithdrawOutcome?
 
     func load() async {
         guard !isLoading else { return }
@@ -138,10 +139,33 @@ final class MoneyStore: ObservableObject {
     func withdraw() async -> String? {
         struct WithdrawResponse: Decodable {
             @Flexible var amount: Double
+            @Flexible var requested: Double
+            @Flexible var heldBack: Double
+            var jobsSent: Int?
+            var jobsFailed: Int?
+            var failureReason: String?
+
+            enum CodingKeys: String, CodingKey {
+                case amount, requested
+                case heldBack       = "held_back"
+                case jobsSent       = "jobs_sent"
+                case jobsFailed     = "jobs_failed"
+                case failureReason  = "failure_reason"
+            }
         }
         do {
             let r = try await API.shared.post("/payouts/withdraw", as: WithdrawResponse.self)
-            lastWithdrawal = Money.string(r.amount)
+            // A withdrawal can half-succeed: some jobs transfer, the rest bounce
+            // straight back into the balance. Reporting only `amount` under the
+            // title "On its way" is how a $678.19 balance and a $49.50 transfer
+            // both read as the same thing — success.
+            lastWithdrawal = WithdrawOutcome(
+                sent: r.amount,
+                heldBack: max(0, r.heldBack),
+                jobsSent: r.jobsSent ?? 0,
+                jobsFailed: r.jobsFailed ?? 0,
+                reason: r.failureReason
+            )
             await load()
             return nil
         } catch let e as APIError {
@@ -149,5 +173,29 @@ final class MoneyStore: ObservableObject {
         } catch {
             return "Could not send the withdrawal."
         }
+    }
+}
+
+/// What actually happened when the button was pressed.
+struct WithdrawOutcome: Identifiable {
+    let id = UUID()
+    let sent: Double
+    let heldBack: Double
+    let jobsSent: Int
+    let jobsFailed: Int
+    let reason: String?
+
+    var isPartial: Bool { heldBack > 0.005 || jobsFailed > 0 }
+
+    var title: String { isPartial ? "Part of it went" : "On its way" }
+
+    var body: String {
+        guard isPartial else { return "\(Money.string(sent)) is on its way to your bank." }
+        var s = "\(Money.string(sent)) is on its way to your bank.\n\n"
+              + "\(Money.string(heldBack)) could not be sent"
+        if jobsFailed > 0 { s += " (\(jobsFailed) job\(jobsFailed == 1 ? "" : "s"))" }
+        s += " and is still in your available balance."
+        if let reason, !reason.isEmpty { s += "\n\nStripe said: \(reason)" }
+        return s
     }
 }
