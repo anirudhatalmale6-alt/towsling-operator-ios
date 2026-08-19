@@ -27,6 +27,11 @@ struct Company: Decodable, Equatable {
     @FlexibleInt var trucksCount: Int?
     let emailVerified: Bool?
     let phoneVerified: Bool?
+    /// Absolute URL, built server-side. The app is not served from an origin,
+    /// so a relative path here resolves against nothing and shows no image.
+    let logoUrl: String?
+    @FlexibleOptional var ratingAvg: Double?
+    @FlexibleInt var ratingCount: Int?
 
     private let hasLightDuty: Int?
     private let hasMediumDuty: Int?
@@ -56,6 +61,9 @@ struct Company: Decodable, Equatable {
         case trucksCount        = "trucks_count"
         case emailVerified      = "email_verified"
         case phoneVerified      = "phone_verified"
+        case logoUrl            = "logo_url"
+        case ratingAvg          = "rating_avg"
+        case ratingCount        = "rating_count"
         case hasLightDuty       = "has_light_duty"
         case hasMediumDuty      = "has_medium_duty"
         case hasHeavyDuty       = "has_heavy_duty"
@@ -158,6 +166,7 @@ final class CompanyStore: ObservableObject {
     @Published private(set) var equipmentTypes: [String] = []
     @Published private(set) var isLoading = false
     @Published private(set) var isSaving = false
+    @Published private(set) var isUploadingLogo = false
     @Published var errorMessage: String?
     @Published var savedNote: String?
 
@@ -248,6 +257,52 @@ final class CompanyStore: ObservableObject {
         } catch {
             errorMessage = "Could not save that."
             await load()
+        }
+    }
+
+    // MARK: - Logo
+
+    /// Send a PNG. The caller transcodes whatever the library gave it, so this
+    /// never has to reason about HEIC.
+    func uploadLogo(_ png: Data) async {
+        isUploadingLogo = true
+        defer { isUploadingLogo = false }
+
+        struct LogoResponse: Decodable {
+            let logoUrl: String?
+            enum CodingKeys: String, CodingKey { case logoUrl = "logo_url" }
+        }
+
+        do {
+            _ = try await API.shared.upload("/company/logo",
+                                            fields: [:],
+                                            fileName: "logo.png",
+                                            mimeType: "image/png",
+                                            fileData: png,
+                                            as: LogoResponse.self)
+            savedNote = "Logo saved."
+            errorMessage = nil
+            // Reloaded rather than patched in place: the server decides the
+            // final URL (it re-encodes and renames), and guessing it here would
+            // point an AsyncImage at a file that does not exist.
+            await load()
+        } catch let e as APIError {
+            errorMessage = e.message
+        } catch {
+            errorMessage = "Could not upload that logo."
+        }
+    }
+
+    func removeLogo() async {
+        do {
+            try await API.shared.postIgnoringResult("/company/logo-remove", body: [:])
+            savedNote = "Logo removed."
+            errorMessage = nil
+            await load()
+        } catch let e as APIError {
+            errorMessage = e.message
+        } catch {
+            errorMessage = "Could not remove your logo."
         }
     }
 

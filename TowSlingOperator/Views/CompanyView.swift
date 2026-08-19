@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 /// The company record, its trucks, and the duty switch.
 ///
@@ -12,6 +13,7 @@ struct CompanyView: View {
     @State private var addingTruck = false
     @State private var editingCompany = false
     @State private var verifying: VerifyView.Channel?
+    @State private var logoItem: PhotosPickerItem?
 
     var body: some View {
         ZStack {
@@ -24,6 +26,7 @@ struct CompanyView: View {
                     } else if let company = store.company {
                         dutyCard(company)
                         verificationCard
+                        brandCard(company)
                         detailsCard(company)
                         capabilitiesCard(company)
                         trucksCard
@@ -157,6 +160,97 @@ struct CompanyView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .cardBackground()
+        }
+    }
+
+    /// Logo and reviews — the two things a customer sees about this company that
+    /// the company does not otherwise get to look at.
+    private func brandCard(_ company: Company) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 14) {
+                CompanyLogo(url: company.logoUrl, fallback: company.name, size: 58)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Company logo")
+                        .font(.system(size: 15.5, weight: .bold))
+                        .foregroundStyle(Theme.ink)
+                    Text("Shown to the customer beside your name and on the map they watch while you drive to them.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(Theme.inkFaint)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+            }
+
+            HStack(spacing: 10) {
+                PhotosPicker(selection: $logoItem, matching: .images) {
+                    Text(company.logoUrl == nil ? "Upload a logo" : "Change logo")
+                        .font(.system(size: 13.5, weight: .bold))
+                        .foregroundStyle(Theme.accent)
+                }
+                if company.logoUrl != nil {
+                    Button("Remove") { Task { await store.removeLogo() } }
+                        .font(.system(size: 13.5, weight: .semibold))
+                        .foregroundStyle(Theme.inkDim)
+                }
+                if store.isUploadingLogo {
+                    ProgressView().tint(Theme.inkFaint).scaleEffect(0.7)
+                }
+                Spacer(minLength: 0)
+            }
+
+            Divider().overlay(Theme.line)
+
+            NavigationLink {
+                ReviewsView()
+            } label: {
+                HStack(spacing: 8) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Customer reviews")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(Theme.ink)
+                        if let n = company.ratingCount, n > 0 {
+                            HStack(spacing: 6) {
+                                Stars(value: company.ratingAvg ?? 0, size: 12)
+                                Text("\(String(format: "%.1f", company.ratingAvg ?? 0)) · \(n) review\(n == 1 ? "" : "s")")
+                                    .font(.system(size: 12.5))
+                                    .foregroundStyle(Theme.inkDim)
+                            }
+                        } else {
+                            Text("No reviews yet")
+                                .font(.system(size: 12.5))
+                                .foregroundStyle(Theme.inkFaint)
+                        }
+                    }
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Theme.inkFaint)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardBackground()
+        .onChange(of: logoItem) { item in
+            guard let item else { return }
+            Task {
+                // loadTransferable hands back the ORIGINAL bytes, whatever the
+                // library holds — and on an iPhone that is HEIC by default. The
+                // server only accepts JPEG/PNG/WEBP, and the GD build behind it
+                // has no HEIF support at all, so those bytes would be refused
+                // with a message about file types for a photo the operator
+                // picked out of his own library.
+                //
+                // Decoding and re-encoding as PNG here makes the format a
+                // non-issue: whatever he picks, the server receives a PNG.
+                if let data = try? await item.loadTransferable(type: Data.self),
+                   let png = UIImage(data: data)?.pngData() {
+                    await store.uploadLogo(png)
+                } else {
+                    store.errorMessage = "That image could not be read. Try another one."
+                }
+                logoItem = nil
+            }
         }
     }
 

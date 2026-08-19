@@ -22,34 +22,36 @@
 		7A000000000000000000001A /* PhotoStore.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000019 /* PhotoStore.swift */; };
 		7A000000000000000000001C /* PushRegistrar.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000001B /* PushRegistrar.swift */; };
 		7A000000000000000000001E /* RatesStore.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000001D /* RatesStore.swift */; };
-		7A0000000000000000000020 /* Session.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000001F /* Session.swift */; };
-		7A0000000000000000000022 /* API.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000021 /* API.swift */; };
-		7A0000000000000000000024 /* Theme.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000023 /* Theme.swift */; };
-		7A0000000000000000000026 /* TowSlingOperatorApp.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000025 /* TowSlingOperatorApp.swift */; };
-		7A0000000000000000000028 /* AddressField.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000027 /* AddressField.swift */; };
-		7A000000000000000000002A /* AlertsView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000029 /* AlertsView.swift */; };
-		7A000000000000000000002C /* BoardView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000002B /* BoardView.swift */; };
-		7A000000000000000000002E /* CompanyEditor.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000002D /* CompanyEditor.swift */; };
-		7A0000000000000000000030 /* CompanyView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000002F /* CompanyView.swift */; };
-		7A0000000000000000000032 /* DeleteAccountView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000031 /* DeleteAccountView.swift */; };
-		7A0000000000000000000034 /* DocumentsView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000033 /* DocumentsView.swift */; };
-		7A0000000000000000000036 /* HistoryView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000035 /* HistoryView.swift */; };
-		7A0000000000000000000038 /* JobCard.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000037 /* JobCard.swift */; };
-		7A000000000000000000003A /* JobPhotosView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000039 /* JobPhotosView.swift */; };
-		7A000000000000000000003C /* LoginView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000003B /* LoginView.swift */; };
-		7A000000000000000000003E /* MoneyView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000003D /* MoneyView.swift */; };
-		7A0000000000000000000040 /* MyJobsView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000003F /* MyJobsView.swift */; };
-		7A0000000000000000000042 /* RatesView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000041 /* RatesView.swift */; };
-		7A0000000000000000000044 /* RootView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000043 /* RootView.swift */; };
-		7A0000000000000000000046 /* SignupView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000045 /* SignupView.swift */; };
-		7A0000000000000000000048 /* TruckEditor.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000047 /* TruckEditor.swift */; };
-		7A000000000000000000004A /* VerifyView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000049 /* VerifyView.swift */; };
-		7A000000000000000000004C /* Assets.xcassets in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000004B /* Assets.xcassets */; };
-		7A000000000000000000004E /* alarm_tone.wav in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000004D /* alarm_tone.wav */; };
+		7A0000000000000000000020 /* ReviewsStore.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000001F /* ReviewsStore.swift */; };
+		7A0000000000000000000022 /* Session.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000021 /* Session.swift */; };
+		7A0000000000000000000024 /* API.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000023 /* API.swift */; };
+		7A0000000000000000000026 /* Theme.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000025 /* Theme.swift */; };
+		7A0000000000000000000028 /* TowSlingOperatorApp.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000027 /* TowSlingOperatorApp.swift */; };
+		7A000000000000000000002A /* AddressField.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000029 /* AddressField.swift */; };
+		7A000000000000000000002C /* AlertsView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000002B /* AlertsView.swift */; };
+		7A000000000000000000002E /* BoardView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000002D /* BoardView.swift */; };
+		7A0000000000000000000030 /* CompanyEditor.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000002F /* CompanyEditor.swift */; };
+		7A0000000000000000000032 /* CompanyView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000031 /* CompanyView.swift */; };
+		7A0000000000000000000034 /* DeleteAccountView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000033 /* DeleteAccountView.swift */; };
+		7A0000000000000000000036 /* DocumentsView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000035 /* DocumentsView.swift */; };
+		7A0000000000000000000038 /* HistoryView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000037 /* HistoryView.swift */; };
+		7A000000000000000000003A /* JobCard.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000039 /* JobCard.swift */; };
+		7A000000000000000000003C /* JobPhotosView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000003B /* JobPhotosView.swift */; };
+		7A000000000000000000003E /* LoginView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000003D /* LoginView.swift */; };
+		7A0000000000000000000040 /* MoneyView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000003F /* MoneyView.swift */; };
+		7A0000000000000000000042 /* MyJobsView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000041 /* MyJobsView.swift */; };
+		7A0000000000000000000044 /* RatesView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000043 /* RatesView.swift */; };
+		7A0000000000000000000046 /* ReviewsView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000045 /* ReviewsView.swift */; };
+		7A0000000000000000000048 /* RootView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000047 /* RootView.swift */; };
+		7A000000000000000000004A /* SignupView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000049 /* SignupView.swift */; };
+		7A000000000000000000004C /* TruckEditor.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000004B /* TruckEditor.swift */; };
+		7A000000000000000000004E /* VerifyView.swift in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000004D /* VerifyView.swift */; };
+		7A0000000000000000000050 /* Assets.xcassets in Build */ = {isa = PBXBuildFile; fileRef = 7A000000000000000000004F /* Assets.xcassets */; };
+		7A0000000000000000000052 /* alarm_tone.wav in Build */ = {isa = PBXBuildFile; fileRef = 7A0000000000000000000051 /* alarm_tone.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7A0000000000000000000051 /* TowSlingOperator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TowSlingOperator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A0000000000000000000055 /* TowSlingOperator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TowSlingOperator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A0000000000000000000001 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Config.swift"; sourceTree = "<group>"; };
 		7A0000000000000000000003 /* AlertsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertsStore.swift"; sourceTree = "<group>"; };
 		7A0000000000000000000005 /* BoardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BoardStore.swift"; sourceTree = "<group>"; };
@@ -65,34 +67,36 @@
 		7A0000000000000000000019 /* PhotoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoStore.swift"; sourceTree = "<group>"; };
 		7A000000000000000000001B /* PushRegistrar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PushRegistrar.swift"; sourceTree = "<group>"; };
 		7A000000000000000000001D /* RatesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RatesStore.swift"; sourceTree = "<group>"; };
-		7A000000000000000000001F /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Session.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000021 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "API.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000023 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Theme.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000025 /* TowSlingOperatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TowSlingOperatorApp.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000027 /* AddressField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressField.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000029 /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertsView.swift"; sourceTree = "<group>"; };
-		7A000000000000000000002B /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BoardView.swift"; sourceTree = "<group>"; };
-		7A000000000000000000002D /* CompanyEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompanyEditor.swift"; sourceTree = "<group>"; };
-		7A000000000000000000002F /* CompanyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompanyView.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000031 /* DeleteAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeleteAccountView.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000033 /* DocumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentsView.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000035 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryView.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000037 /* JobCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobCard.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000039 /* JobPhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobPhotosView.swift"; sourceTree = "<group>"; };
-		7A000000000000000000003B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginView.swift"; sourceTree = "<group>"; };
-		7A000000000000000000003D /* MoneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoneyView.swift"; sourceTree = "<group>"; };
-		7A000000000000000000003F /* MyJobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyJobsView.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000041 /* RatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RatesView.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000043 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RootView.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000045 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SignupView.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000047 /* TruckEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckEditor.swift"; sourceTree = "<group>"; };
-		7A0000000000000000000049 /* VerifyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VerifyView.swift"; sourceTree = "<group>"; };
-		7A000000000000000000004B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
-		7A000000000000000000004D /* alarm_tone.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "alarm_tone.wav"; sourceTree = "<group>"; };
+		7A000000000000000000001F /* ReviewsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReviewsStore.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000021 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Session.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000023 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "API.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000025 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Theme.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000027 /* TowSlingOperatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TowSlingOperatorApp.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000029 /* AddressField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressField.swift"; sourceTree = "<group>"; };
+		7A000000000000000000002B /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertsView.swift"; sourceTree = "<group>"; };
+		7A000000000000000000002D /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BoardView.swift"; sourceTree = "<group>"; };
+		7A000000000000000000002F /* CompanyEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompanyEditor.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000031 /* CompanyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompanyView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000033 /* DeleteAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeleteAccountView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000035 /* DocumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentsView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000037 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000039 /* JobCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobCard.swift"; sourceTree = "<group>"; };
+		7A000000000000000000003B /* JobPhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobPhotosView.swift"; sourceTree = "<group>"; };
+		7A000000000000000000003D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginView.swift"; sourceTree = "<group>"; };
+		7A000000000000000000003F /* MoneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoneyView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000041 /* MyJobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyJobsView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000043 /* RatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RatesView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000045 /* ReviewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReviewsView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000047 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RootView.swift"; sourceTree = "<group>"; };
+		7A0000000000000000000049 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SignupView.swift"; sourceTree = "<group>"; };
+		7A000000000000000000004B /* TruckEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckEditor.swift"; sourceTree = "<group>"; };
+		7A000000000000000000004D /* VerifyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VerifyView.swift"; sourceTree = "<group>"; };
+		7A000000000000000000004F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
+		7A0000000000000000000051 /* alarm_tone.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "alarm_tone.wav"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		7A0000000000000000000056 /* Frameworks */ = {
+		7A000000000000000000005A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -102,38 +106,38 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7A0000000000000000000052 = {
+		7A0000000000000000000056 = {
 			isa = PBXGroup;
 			children = (
-				7A0000000000000000000054 /* TowSlingOperator */,
-				7A0000000000000000000053 /* Products */,
+				7A0000000000000000000058 /* TowSlingOperator */,
+				7A0000000000000000000057 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		7A0000000000000000000053 /* Products */ = {
+		7A0000000000000000000057 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7A0000000000000000000051 /* TowSlingOperator.app */,
+				7A0000000000000000000055 /* TowSlingOperator.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7A0000000000000000000054 /* TowSlingOperator */ = {
+		7A0000000000000000000058 /* TowSlingOperator */ = {
 			isa = PBXGroup;
 			children = (
-				7A000000000000000000005F /* Models */,
-				7A000000000000000000006E /* Networking */,
-				7A0000000000000000000084 /* Sounds */,
-				7A0000000000000000000071 /* Views */,
+				7A0000000000000000000063 /* Models */,
+				7A0000000000000000000073 /* Networking */,
+				7A000000000000000000008A /* Sounds */,
+				7A0000000000000000000076 /* Views */,
 				7A0000000000000000000001 /* Config.swift */,
-				7A0000000000000000000023 /* Theme.swift */,
-				7A0000000000000000000025 /* TowSlingOperatorApp.swift */,
-				7A000000000000000000004B /* Assets.xcassets */,
+				7A0000000000000000000025 /* Theme.swift */,
+				7A0000000000000000000027 /* TowSlingOperatorApp.swift */,
+				7A000000000000000000004F /* Assets.xcassets */,
 			);
 			path = "TowSlingOperator";
 			sourceTree = "<group>";
 		};
-		7A000000000000000000005F /* Models */ = {
+		7A0000000000000000000063 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				7A0000000000000000000003 /* AlertsStore.swift */,
@@ -150,48 +154,50 @@
 				7A0000000000000000000019 /* PhotoStore.swift */,
 				7A000000000000000000001B /* PushRegistrar.swift */,
 				7A000000000000000000001D /* RatesStore.swift */,
-				7A000000000000000000001F /* Session.swift */,
+				7A000000000000000000001F /* ReviewsStore.swift */,
+				7A0000000000000000000021 /* Session.swift */,
 			);
 			path = "Models";
 			sourceTree = "<group>";
 		};
-		7A000000000000000000006E /* Networking */ = {
+		7A0000000000000000000073 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				7A0000000000000000000021 /* API.swift */,
+				7A0000000000000000000023 /* API.swift */,
 			);
 			path = "Networking";
 			sourceTree = "<group>";
 		};
-		7A0000000000000000000084 /* Sounds */ = {
+		7A000000000000000000008A /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
-				7A000000000000000000004D /* alarm_tone.wav */,
+				7A0000000000000000000051 /* alarm_tone.wav */,
 			);
 			path = "Sounds";
 			sourceTree = "<group>";
 		};
-		7A0000000000000000000071 /* Views */ = {
+		7A0000000000000000000076 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				7A0000000000000000000027 /* AddressField.swift */,
-				7A0000000000000000000029 /* AlertsView.swift */,
-				7A000000000000000000002B /* BoardView.swift */,
-				7A000000000000000000002D /* CompanyEditor.swift */,
-				7A000000000000000000002F /* CompanyView.swift */,
-				7A0000000000000000000031 /* DeleteAccountView.swift */,
-				7A0000000000000000000033 /* DocumentsView.swift */,
-				7A0000000000000000000035 /* HistoryView.swift */,
-				7A0000000000000000000037 /* JobCard.swift */,
-				7A0000000000000000000039 /* JobPhotosView.swift */,
-				7A000000000000000000003B /* LoginView.swift */,
-				7A000000000000000000003D /* MoneyView.swift */,
-				7A000000000000000000003F /* MyJobsView.swift */,
-				7A0000000000000000000041 /* RatesView.swift */,
-				7A0000000000000000000043 /* RootView.swift */,
-				7A0000000000000000000045 /* SignupView.swift */,
-				7A0000000000000000000047 /* TruckEditor.swift */,
-				7A0000000000000000000049 /* VerifyView.swift */,
+				7A0000000000000000000029 /* AddressField.swift */,
+				7A000000000000000000002B /* AlertsView.swift */,
+				7A000000000000000000002D /* BoardView.swift */,
+				7A000000000000000000002F /* CompanyEditor.swift */,
+				7A0000000000000000000031 /* CompanyView.swift */,
+				7A0000000000000000000033 /* DeleteAccountView.swift */,
+				7A0000000000000000000035 /* DocumentsView.swift */,
+				7A0000000000000000000037 /* HistoryView.swift */,
+				7A0000000000000000000039 /* JobCard.swift */,
+				7A000000000000000000003B /* JobPhotosView.swift */,
+				7A000000000000000000003D /* LoginView.swift */,
+				7A000000000000000000003F /* MoneyView.swift */,
+				7A0000000000000000000041 /* MyJobsView.swift */,
+				7A0000000000000000000043 /* RatesView.swift */,
+				7A0000000000000000000045 /* ReviewsView.swift */,
+				7A0000000000000000000047 /* RootView.swift */,
+				7A0000000000000000000049 /* SignupView.swift */,
+				7A000000000000000000004B /* TruckEditor.swift */,
+				7A000000000000000000004D /* VerifyView.swift */,
 			);
 			path = "Views";
 			sourceTree = "<group>";
@@ -199,13 +205,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7A0000000000000000000050 /* TowSlingOperator */ = {
+		7A0000000000000000000054 /* TowSlingOperator */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7A0000000000000000000059 /* Build configuration list for PBXNativeTarget "TowSlingOperator" */;
+			buildConfigurationList = 7A000000000000000000005D /* Build configuration list for PBXNativeTarget "TowSlingOperator" */;
 			buildPhases = (
-				7A0000000000000000000055 /* Sources */,
-				7A0000000000000000000056 /* Frameworks */,
-				7A0000000000000000000057 /* Resources */,
+				7A0000000000000000000059 /* Sources */,
+				7A000000000000000000005A /* Frameworks */,
+				7A000000000000000000005B /* Resources */,
 			);
 			buildRules = (
 			);
@@ -213,25 +219,25 @@
 			);
 			name = TowSlingOperator;
 			productName = TowSlingOperator;
-			productReference = 7A0000000000000000000051 /* TowSlingOperator.app */;
+			productReference = 7A0000000000000000000055 /* TowSlingOperator.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		7A000000000000000000004F /* Project object */ = {
+		7A0000000000000000000053 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					7A0000000000000000000050 = {
+					7A0000000000000000000054 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
-			buildConfigurationList = 7A0000000000000000000058 /* Build configuration list for PBXProject "TowSlingOperator" */;
+			buildConfigurationList = 7A000000000000000000005C /* Build configuration list for PBXProject "TowSlingOperator" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -239,30 +245,30 @@
 				en,
 				Base,
 			);
-			mainGroup = 7A0000000000000000000052;
-			productRefGroup = 7A0000000000000000000053 /* Products */;
+			mainGroup = 7A0000000000000000000056;
+			productRefGroup = 7A0000000000000000000057 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7A0000000000000000000050 /* TowSlingOperator */,
+				7A0000000000000000000054 /* TowSlingOperator */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		7A0000000000000000000057 /* Resources */ = {
+		7A000000000000000000005B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7A000000000000000000004C /* Assets.xcassets in Resources */,
-				7A000000000000000000004E /* alarm_tone.wav in Resources */,
+				7A0000000000000000000050 /* Assets.xcassets in Resources */,
+				7A0000000000000000000052 /* alarm_tone.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		7A0000000000000000000055 /* Sources */ = {
+		7A0000000000000000000059 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -281,35 +287,37 @@
 				7A000000000000000000001A /* PhotoStore.swift in Sources */,
 				7A000000000000000000001C /* PushRegistrar.swift in Sources */,
 				7A000000000000000000001E /* RatesStore.swift in Sources */,
-				7A0000000000000000000020 /* Session.swift in Sources */,
-				7A0000000000000000000022 /* API.swift in Sources */,
-				7A0000000000000000000024 /* Theme.swift in Sources */,
-				7A0000000000000000000026 /* TowSlingOperatorApp.swift in Sources */,
-				7A0000000000000000000028 /* AddressField.swift in Sources */,
-				7A000000000000000000002A /* AlertsView.swift in Sources */,
-				7A000000000000000000002C /* BoardView.swift in Sources */,
-				7A000000000000000000002E /* CompanyEditor.swift in Sources */,
-				7A0000000000000000000030 /* CompanyView.swift in Sources */,
-				7A0000000000000000000032 /* DeleteAccountView.swift in Sources */,
-				7A0000000000000000000034 /* DocumentsView.swift in Sources */,
-				7A0000000000000000000036 /* HistoryView.swift in Sources */,
-				7A0000000000000000000038 /* JobCard.swift in Sources */,
-				7A000000000000000000003A /* JobPhotosView.swift in Sources */,
-				7A000000000000000000003C /* LoginView.swift in Sources */,
-				7A000000000000000000003E /* MoneyView.swift in Sources */,
-				7A0000000000000000000040 /* MyJobsView.swift in Sources */,
-				7A0000000000000000000042 /* RatesView.swift in Sources */,
-				7A0000000000000000000044 /* RootView.swift in Sources */,
-				7A0000000000000000000046 /* SignupView.swift in Sources */,
-				7A0000000000000000000048 /* TruckEditor.swift in Sources */,
-				7A000000000000000000004A /* VerifyView.swift in Sources */,
+				7A0000000000000000000020 /* ReviewsStore.swift in Sources */,
+				7A0000000000000000000022 /* Session.swift in Sources */,
+				7A0000000000000000000024 /* API.swift in Sources */,
+				7A0000000000000000000026 /* Theme.swift in Sources */,
+				7A0000000000000000000028 /* TowSlingOperatorApp.swift in Sources */,
+				7A000000000000000000002A /* AddressField.swift in Sources */,
+				7A000000000000000000002C /* AlertsView.swift in Sources */,
+				7A000000000000000000002E /* BoardView.swift in Sources */,
+				7A0000000000000000000030 /* CompanyEditor.swift in Sources */,
+				7A0000000000000000000032 /* CompanyView.swift in Sources */,
+				7A0000000000000000000034 /* DeleteAccountView.swift in Sources */,
+				7A0000000000000000000036 /* DocumentsView.swift in Sources */,
+				7A0000000000000000000038 /* HistoryView.swift in Sources */,
+				7A000000000000000000003A /* JobCard.swift in Sources */,
+				7A000000000000000000003C /* JobPhotosView.swift in Sources */,
+				7A000000000000000000003E /* LoginView.swift in Sources */,
+				7A0000000000000000000040 /* MoneyView.swift in Sources */,
+				7A0000000000000000000042 /* MyJobsView.swift in Sources */,
+				7A0000000000000000000044 /* RatesView.swift in Sources */,
+				7A0000000000000000000046 /* ReviewsView.swift in Sources */,
+				7A0000000000000000000048 /* RootView.swift in Sources */,
+				7A000000000000000000004A /* SignupView.swift in Sources */,
+				7A000000000000000000004C /* TruckEditor.swift in Sources */,
+				7A000000000000000000004E /* VerifyView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		7A000000000000000000005A /* Debug */ = {
+		7A000000000000000000005E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -338,7 +346,7 @@
 			};
 			name = Debug;
 		};
-		7A000000000000000000005B /* Release */ = {
+		7A000000000000000000005F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -360,7 +368,7 @@
 			};
 			name = Release;
 		};
-		7A000000000000000000005C /* Debug */ = {
+		7A0000000000000000000060 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -393,7 +401,7 @@
 			};
 			name = Debug;
 		};
-		7A000000000000000000005D /* Release */ = {
+		7A0000000000000000000061 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -429,25 +437,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7A0000000000000000000058 /* Build configuration list for PBXProject "TowSlingOperator" */ = {
+		7A000000000000000000005C /* Build configuration list for PBXProject "TowSlingOperator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7A000000000000000000005A /* Debug */,
-				7A000000000000000000005B /* Release */,
+				7A000000000000000000005E /* Debug */,
+				7A000000000000000000005F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7A0000000000000000000059 /* Build configuration list for PBXNativeTarget "TowSlingOperator" */ = {
+		7A000000000000000000005D /* Build configuration list for PBXNativeTarget "TowSlingOperator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7A000000000000000000005C /* Debug */,
-				7A000000000000000000005D /* Release */,
+				7A0000000000000000000060 /* Debug */,
+				7A0000000000000000000061 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 7A000000000000000000004F /* Project object */;
+	rootObject = 7A0000000000000000000053 /* Project object */;
 }
