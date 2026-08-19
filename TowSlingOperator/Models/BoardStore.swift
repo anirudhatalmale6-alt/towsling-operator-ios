@@ -82,9 +82,25 @@ final class BoardStore: ObservableObject {
                 "/calls/my-calls", query: ["limit": "50"], as: MineResponse.self
             )
             myJobs = mine.calls.filter { $0.isLive }
+
+            // Feed the customer's map. Only ever driven by a SUCCESSFUL fetch:
+            // a failed poll must not be read as "the job ended" and shut the
+            // tracking down on a driver who is mid-tow with bad signal.
+            JobTracker.shared.sync(activeCallID: jobBeingDriven?.id)
         } catch let e as APIError {
             if e.isUnauthorized { sessionExpired = true }
         } catch { }
+    }
+
+    /// The job whose customer is watching a map right now.
+    ///
+    /// A driver can hold more than one — he accepts the next while finishing
+    /// this one — so "the first live job" is not good enough. The furthest
+    /// along is the one he is actually driving; the others have customers who
+    /// have not been given a truck to watch yet.
+    private var jobBeingDriven: Job? {
+        let rank = ["in_progress": 3, "on_scene": 2, "en_route": 1, "awarded": 0]
+        return myJobs.max { (rank[$0.status] ?? -1) < (rank[$1.status] ?? -1) }
     }
 
     // MARK: - Acting on a job

@@ -11,5 +11,21 @@
 	<array>
 		<string>comgooglemaps</string>
 	</array>
+
+	<!-- Continuous location while the app is not in front. Needed for exactly
+	     one thing: the map a stranded customer is watching must keep moving
+	     while the driver is in Maps, on a call, or with the screen off, which
+	     is where a driver spends the whole journey. Without this the marker
+	     freezes the instant he switches app and the customer concludes nobody
+	     is coming.
+
+	     Scoped in code to a live job: see JobTracker, which starts on accept
+	     and stops the moment the server says the job is over. Like
+	     LSApplicationQueriesSchemes above, this is an array and so has no
+	     INFOPLIST_KEY_ equivalent to set from the build settings. -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 </dict>
 </plist>

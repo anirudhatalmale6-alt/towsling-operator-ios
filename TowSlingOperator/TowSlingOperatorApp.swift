@@ -105,6 +105,11 @@ struct TowSlingOperatorApp: App {
                         // that keeps sending positions for an account it is no
                         // longer signed into is indefensible.
                         LocationReporter.shared.signedOut()
+                        // And the per-job tracker, which holds the GPS open at
+                        // full accuracy. Signing out mid-job would otherwise
+                        // leave it running until the server happened to refuse
+                        // a ping.
+                        JobTracker.shared.stop()
                     }
                 }
         }

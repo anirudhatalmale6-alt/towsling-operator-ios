@@ -7,7 +7,7 @@
                            buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7A000000000000000000004E"
+               BlueprintIdentifier = "7A0000000000000000000050"
                BuildableName = "TowSlingOperator.app"
                BlueprintName = "TowSlingOperator"
                ReferencedContainer = "container:TowSlingOperator.xcodeproj">
@@ -31,7 +31,7 @@
       <BuildableProductRunnable runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7A000000000000000000004E"
+            BlueprintIdentifier = "7A0000000000000000000050"
             BuildableName = "TowSlingOperator.app"
             BlueprintName = "TowSlingOperator"
             ReferencedContainer = "container:TowSlingOperator.xcodeproj">
@@ -43,7 +43,7 @@
       <BuildableProductRunnable runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7A000000000000000000004E"
+            BlueprintIdentifier = "7A0000000000000000000050"
             BuildableName = "TowSlingOperator.app"
             BlueprintName = "TowSlingOperator"
             ReferencedContainer = "container:TowSlingOperator.xcodeproj">
