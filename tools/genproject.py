@@ -30,7 +30,10 @@ SRC = ROOT / APP
 
 BUNDLE_ID = "com.towsling.operator"
 DEPLOYMENT_TARGET = "16.0"
-MARKETING_VERSION = "0.1.0"
+# The version the App Store shows. This is the ONLY place it is written — the
+# project file is generated, so editing MARKETING_VERSION in Xcode is undone the
+# next time somebody adds a source file. Bump it here for every release.
+MARKETING_VERSION = "1.0.0"
 
 # Deterministic ids so re-running produces the same file and the diff stays
 # readable. Xcode only needs them unique within the project.
@@ -328,7 +331,15 @@ def main():
 				PRODUCT_BUNDLE_IDENTIFIER = {BUNDLE_ID};
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";"""
+				TARGETED_DEVICE_FAMILY = "1";"""
+    # iPhone only. It was "1,2" — iPhone and iPad — which was never a decision,
+    # it is Xcode's default. Claiming iPad support has three costs and no
+    # benefit for a driver in a truck: App Review tests on an iPad and judges
+    # the layout there, the store demands a separate set of 13" screenshots,
+    # and the portrait lock above only applies to iPhone, so an iPad would
+    # rotate a single-column layout into landscape and stretch it. Dropping to
+    # iPhone removes all three. It can be added back the day the layout is
+    # actually designed for the larger screen.
 
     add("\n/* Begin XCBuildConfiguration section */")
     for guid, name, extra in [
